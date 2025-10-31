@@ -1,0 +1,62 @@
+{
+  "name": "@russellio/vue-background-stars",
+  "version": "1.0.0",
+  "description": "A beautiful animated starry night sky background component for Vue 3 with optional toggle control",
+  "type": "module",
+  "main": "./dist/vue-background-stars.umd.js",
+  "module": "./dist/vue-background-stars.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-background-stars.es.js",
+      "require": "./dist/vue-background-stars.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "background",
+    "stars",
+    "animation",
+    "night-sky",
+    "component",
+    "ui"
+  ],
+  "author": "Jon Russell",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/russellio/vue-background-stars.git"
+  },
+  "bugs": {
+    "url": "https://github.com/russellio/vue-background-stars/issues"
+  },
+  "homepage": "https://github.com/russellio/vue-background-stars#readme",
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "typescript": "^5.2.2",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.3.0",
+    "vue": "^3.5.13",
+    "vue-tsc": "^2.2.4"
+  },
+  "dependencies": {}
+}
+

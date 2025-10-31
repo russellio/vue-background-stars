@@ -1,0 +1,12 @@
+node_modules
+demo
+*.local
+.DS_Store
+.vscode
+.idea
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+.gitignore
+src
+
