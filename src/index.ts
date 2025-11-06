@@ -4,10 +4,11 @@ import ToggleSwitch from './components/ToggleSwitch.vue';
 
 export { BackgroundStars, ToggleSwitch };
 
-export default {
+const install = {
     install(app: App) {
         app.component('BackgroundStars', BackgroundStars);
         app.component('ToggleSwitch', ToggleSwitch);
     },
 };
 
+export default install;
