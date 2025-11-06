@@ -47,7 +47,6 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           # OIDC is used automatically if Trusted Publisher is configured on npm
-          # Scope is set in package.json publishConfig
 
       - name: Verify and update npm version
         run: |
@@ -60,6 +59,13 @@ jobs:
           npm install -g npm@latest
           echo "npm (after): $(npm --version)"
 
+      - name: Configure npm for OIDC
+        run: |
+          echo "=== Configuring npm for OIDC ==="
+          npm config set registry https://registry.npmjs.org/
+          # setup-node@v4 should handle OIDC automatically when registry-url is set
+          # But we'll verify it's working
+
       - name: Install dependencies
         run: npm ci
 
@@ -69,20 +75,32 @@ jobs:
       - name: Build Package
         run: npm run build
 
-      - name: Verify npm configuration
+      - name: Debug OIDC token exchange
         run: |
+          echo "=== GitHub OIDC Token Check ==="
+          if [ -f "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" ] && [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
+            echo "✓ GitHub OIDC token request available"
+            echo "Token file exists: $([ -f "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" ] && echo 'yes' || echo 'no')"
+            echo "Token URL set: $([ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ] && echo 'yes' || echo 'no')"
+          else
+            echo "⚠️  GitHub OIDC token request not available"
+            echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-not set}"
+            echo "ACTIONS_ID_TOKEN_REQUEST_URL: ${ACTIONS_ID_TOKEN_REQUEST_URL:-not set}"
+          fi
+          echo ""
           echo "=== npm Configuration Check ==="
           echo "npm version: $(npm --version)"
           echo "Registry: $(npm config get registry)"
           echo "Scope registry: $(npm config get @russellio:registry || echo 'not set')"
           echo ""
-          echo "=== OIDC Token Check ==="
+          echo "=== NODE_AUTH_TOKEN Check ==="
           if [ -n "$NODE_AUTH_TOKEN" ]; then
             TOKEN_LEN=${#NODE_AUTH_TOKEN}
             echo "✓ NODE_AUTH_TOKEN is set (length: $TOKEN_LEN)"
             if [ "$TOKEN_LEN" -lt 100 ]; then
               echo "⚠️  WARNING: Token is unusually short. OIDC tokens are typically 200+ characters."
               echo "   This suggests OIDC token exchange may have failed."
+              echo "   Token format: ${NODE_AUTH_TOKEN:0:5}-${NODE_AUTH_TOKEN:5:5}-..."
             fi
             echo "Token preview: ${NODE_AUTH_TOKEN:0:30}..."
             echo "Token ends with: ...${NODE_AUTH_TOKEN: -10}"
