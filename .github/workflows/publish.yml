@@ -49,6 +49,17 @@ jobs:
           # OIDC is used automatically if Trusted Publisher is configured on npm
           # Scope is set in package.json publishConfig
 
+      - name: Verify and update npm version
+        run: |
+          echo "=== Version Check ==="
+          echo "Node.js: $(node --version)"
+          echo "npm (before): $(npm --version)"
+          echo ""
+          echo "Trusted Publishing requires npm >= 11.5.1"
+          echo "Updating npm to latest to ensure compatibility..."
+          npm install -g npm@latest
+          echo "npm (after): $(npm --version)"
+
       - name: Install dependencies
         run: npm ci
 
@@ -61,6 +72,7 @@ jobs:
       - name: Verify npm configuration
         run: |
           echo "=== npm Configuration Check ==="
+          echo "npm version: $(npm --version)"
           echo "Registry: $(npm config get registry)"
           echo "Scope registry: $(npm config get @russellio:registry || echo 'not set')"
           echo ""
