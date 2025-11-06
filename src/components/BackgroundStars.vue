@@ -61,7 +61,6 @@ function generateStars() {
         return;
     }
 
-    // Use DocumentFragment for better performance
     const starsFragment = document.createDocumentFragment();
     const crossFragment = document.createDocumentFragment();
     const auxFragment = document.createDocumentFragment();
@@ -97,18 +96,14 @@ function generateStars() {
         auxFragment.appendChild(createStar2WithPercentage(getRandomInt(0, 100), getRandomInt(0, 100), getRandomInt(4, 10), color, color));
     }
 
-    // Append all fragments at once for better performance
     starsContainer.value.appendChild(starsFragment);
     starsCrossContainer.value.appendChild(crossFragment);
     starsCrossAuxContainer.value.appendChild(auxFragment);
 }
 
-// Generate stars when component is mounted
 onMounted(() => {
-    // Use requestAnimationFrame to ensure DOM is ready and not block rendering
     requestAnimationFrame(() => {
         generateStars();
-        // Emit event when background is ready
         emit('background-ready');
     });
 });
@@ -116,11 +111,6 @@ onMounted(() => {
 
 <template>
     <div class="sky">
-        <div class="mountains">
-            <div class="land-1"></div>
-            <div class="land-2"></div>
-            <div class="land-3"></div>
-        </div>
         <div class="sky-base"></div>
         <div class="stars" ref="starsContainer"></div>
         <div class="stars-cross" ref="starsCrossContainer"></div>
@@ -128,7 +118,7 @@ onMounted(() => {
     </div>
 </template>
 
-<style scoped>
+<style>
 .sky {
     position: fixed;
     height: 100%;
@@ -136,18 +126,11 @@ onMounted(() => {
     overflow: hidden;
     z-index: -1;
     background:
-        radial-gradient(at 51% 46%, #041028 0, transparent 50%), radial-gradient(at 85% 99%, #330509 0, transparent 50%),
-        radial-gradient(at 18% 22%, #111b4f 0, transparent 50%), #041028;
+        radial-gradient(at 51% 46%, #041028 0, transparent 50%),
+        radial-gradient(at 85% 99%, #330509 0, transparent 50%),
+        radial-gradient(at 18% 22%, #111b4f 0, transparent 50%),
+        #041028;
     transform: scale(1);
-}
-
-.mountains {
-    position: absolute;
-    height: 80px;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    z-index: 2;
 }
 
 .sky-base {
@@ -158,36 +141,6 @@ onMounted(() => {
     position: absolute;
     bottom: 0;
     z-index: 3;
-}
-
-.mountains > [class^='land'],
-.mountains > [class^='land']:after,
-.mountains > [class^='land']:before {
-    background: #110124;
-    box-shadow: 0 0 50px 5px rgba(255, 255, 255, 0.2);
-    position: absolute;
-    bottom: 0;
-}
-
-.land-1 {
-    width: 30%;
-    height: 20px;
-    border-top-right-radius: 100%;
-}
-
-.land-2 {
-    width: 60%;
-    height: 15px;
-    left: 30%;
-    border-top-left-radius: 200%;
-    border-top-right-radius: 200%;
-}
-
-.land-3 {
-    width: 20%;
-    height: 20px;
-    left: 80%;
-    border-top-left-radius: 100%;
 }
 
 .stars {
