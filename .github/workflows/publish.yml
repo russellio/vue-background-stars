@@ -46,7 +46,8 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-          # OIDC is used automatically if configured on npm, otherwise falls back to NPM_TOKEN secret
+          scope: '@russellio'
+          # OIDC is used automatically if configured on npm
 
       - name: Install dependencies
         run: npm ci
@@ -57,5 +58,12 @@ jobs:
       - name: Build Package
         run: npm run build
 
+      - name: Verify npm authentication
+        run: |
+          echo "Checking npm authentication..."
+          npm whoami || echo "Authentication check failed"
+          echo "Checking package access..."
+          npm access ls-packages @russellio || echo "Cannot list packages (this is normal for OIDC)"
+
       - name: Publish to npm
-        run: npm publish --provenance
+        run: npm publish --access public --provenance
