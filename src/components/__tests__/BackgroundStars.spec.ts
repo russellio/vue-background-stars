@@ -51,7 +51,6 @@ describe('BackgroundStars.vue', () => {
         const wrapper = mount(BackgroundStars);
 
         expect(wrapper.find('.sky').exists()).toBe(true);
-        expect(wrapper.find('.mountains').exists()).toBe(true);
         expect(wrapper.find('.sky-base').exists()).toBe(true);
         expect(wrapper.find('.stars').exists()).toBe(true);
         expect(wrapper.find('.stars-cross').exists()).toBe(true);

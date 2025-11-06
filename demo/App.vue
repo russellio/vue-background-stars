@@ -1,32 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import BackgroundStars from '@/components/BackgroundStars.vue';
+import { defineAsyncComponent, onMounted, ref } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
-const showBackground = ref(true);
-
-const handleBackgroundReady = () => {
-  console.log('Background stars are ready!');
-};
+const BackgroundStars = defineAsyncComponent(() => import('@/components/BackgroundStars.vue'));
+const showStars = ref(true);
 </script>
 
 <template>
+  <div class="default-background" :class="{ 'fade-out': showStars }"></div>
+
   <div class="demo-container">
     <!-- Toggle Control -->
     <div class="demo-header">
-      <ToggleSwitch 
-        label="Starry Sky" 
-        v-model="showBackground"
+      <ToggleSwitch
+        label="Starry Sky"
+        v-model="showStars"
         :showIcon="true"
       />
     </div>
 
     <!-- Background Stars -->
     <Transition name="background-fade" appear>
-      <BackgroundStars 
-        v-if="showBackground" 
-        @background-ready="handleBackgroundReady"
-      />
+      <BackgroundStars v-if="showStars" />
     </Transition>
 
     <!-- Demo Content -->
@@ -105,6 +100,19 @@ import '@russellio/vue-background-stars/style.css';
 </template>
 
 <style scoped>
+.default-background {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    z-index: -2;
+    background:
+        radial-gradient(at 51% 46%, #041028 0, transparent 50%),
+        radial-gradient(at 85% 99%, #330509 0, transparent 50%),
+        radial-gradient(at 18% 22%, #111b4f 0, transparent 50%),
+        #041028;
+}
+
 .background-fade-enter-active {
   transition: opacity 1.5s ease-in-out;
 }
