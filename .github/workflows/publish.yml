@@ -7,6 +7,23 @@ on:
   push:
     tags:
       - 'v*' # Run on all tags that start with 'v'
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - debug
+          - info
+          - warning
+          - error
+      environment:
+        description: 'Target environment'
+        required: true
+        type: string
+        default: 'staging'
 
 jobs:
   publish:
