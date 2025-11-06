@@ -19,11 +19,11 @@ on:
           - info
           - warning
           - error
-      environment:
-        description: 'Target environment'
-        required: true
-        type: string
-        default: 'staging'
+      # environment:
+        # description: 'Target environment'
+        # required: true
+        # type: string
+        # default: 'staging'
 
 jobs:
   publish:
