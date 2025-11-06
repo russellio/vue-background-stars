@@ -58,12 +58,27 @@ jobs:
       - name: Build Package
         run: npm run build
 
-      - name: Verify npm authentication
+      - name: Verify npm configuration
         run: |
-          echo "Checking npm authentication..."
-          npm whoami || echo "Authentication check failed"
-          echo "Checking package access..."
-          npm access ls-packages @russellio || echo "Cannot list packages (this is normal for OIDC)"
+          echo "=== npm Configuration Check ==="
+          echo "Registry: $(npm config get registry)"
+          echo "Scope registry: $(npm config get @russellio:registry || echo 'not set')"
+          echo ""
+          echo "=== OIDC Token Check ==="
+          if [ -n "$NODE_AUTH_TOKEN" ]; then
+            echo "✓ NODE_AUTH_TOKEN is set (length: ${#NODE_AUTH_TOKEN})"
+            echo "Token preview: ${NODE_AUTH_TOKEN:0:20}..."
+          else
+            echo "✗ NODE_AUTH_TOKEN is not set"
+          fi
+          echo ""
+          echo "=== Authentication Test ==="
+          npm whoami 2>&1 || echo "⚠️  Authentication failed"
+          echo ""
+          echo "=== GitHub Context (for npm Trusted Publisher verification) ==="
+          echo "Repository: ${{ github.repository }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Workflow file: .github/workflows/publish.yml"
 
       - name: Publish to npm
         run: npm publish --access public --provenance
