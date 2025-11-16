@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - 2024-12-06
+## [1.1.1] - 2025-11-15
 
 ### Added
 - GitHub Actions workflow for automated npm publishing
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configured npm Trusted Publisher for seamless OIDC authentication
 - Added workflow verification steps for npm configuration and authentication
 
-## [1.1.0] - 2024-12-XX
+## [1.1.0] - 2025-11-05
 
 ### Added
 - Comprehensive documentation with detailed technical specifications
@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced project structure documentation
 - Added comprehensive tech stack section
 
-## [1.0.1] - 2024-XX-XX
+## [1.0.1] - 2025-11-04
 
 ### Fixed
 - Package optimization and dependency updates
@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated development dependencies for better compatibility
 
-## [1.0.0] - 2024-XX-XX
+## [1.0.0] - 2025-11-01
 
 ### Added
 - Initial release of Vue Background Stars
