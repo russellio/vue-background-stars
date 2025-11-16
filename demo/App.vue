@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const BackgroundStars = defineAsyncComponent(() => import('@/components/BackgroundStars.vue'));
