@@ -34,7 +34,7 @@ jobs:
       - name: Build demo
         run: cd demo && npx vite build --base /vue-background-stars/
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: demo/dist
 
