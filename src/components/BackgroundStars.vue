@@ -132,7 +132,10 @@ onBeforeUnmount(() => {
       <div
         class="star-layer star-bright"
         :class="{ blink: !disableAnimation }"
-        :style="{ boxShadow: layers.bright, animationDuration: `${BLINK_DURATIONS.bright * speed}s` }"
+        :style="{
+          boxShadow: layers.bright,
+          animationDuration: `${BLINK_DURATIONS.bright * speed}s`,
+        }"
       />
       <!-- Colored nebula glow layers — rotated to form a diagonal band -->
       <div class="nebula-layer" :style="{ boxShadow: layers.nebula }" />
@@ -172,24 +175,54 @@ onBeforeUnmount(() => {
   background-color: transparent;
 }
 
-.star-tiny  { width: 0.5px; height: 0.5px; opacity: 0.8; }
-.star-small { width: 1px;   height: 1px;   opacity: 0.8; }
-.star-med   { width: 1.5px; height: 1.5px; opacity: 0.85; }
-.star-large { width: 2px;   height: 2px;   opacity: 0.9; }
-.star-bright { width: 2.5px; height: 2.5px; opacity: 0.9; }
+.star-tiny {
+  width: 0.5px;
+  height: 0.5px;
+  opacity: 0.8;
+}
+.star-small {
+  width: 1px;
+  height: 1px;
+  opacity: 0.8;
+}
+.star-med {
+  width: 1.5px;
+  height: 1.5px;
+  opacity: 0.85;
+}
+.star-large {
+  width: 2px;
+  height: 2px;
+  opacity: 0.9;
+}
+.star-bright {
+  width: 2.5px;
+  height: 2.5px;
+  opacity: 0.9;
+}
 
 .blink {
   animation: blink ease-in-out infinite alternate;
 }
 
 /* Stagger blink start so layers don't all pulse together. */
-.star-med.blink    { animation-delay: -0.5s; }
-.star-large.blink  { animation-delay: -1s; }
-.star-bright.blink { animation-delay: -2s; }
+.star-med.blink {
+  animation-delay: -0.5s;
+}
+.star-large.blink {
+  animation-delay: -1s;
+}
+.star-bright.blink {
+  animation-delay: -2s;
+}
 
 @keyframes blink {
-  from { opacity: 0.8; }
-  to   { opacity: 0.2; }
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 0.2;
+  }
 }
 
 /* Nebula layers: 1px stamps whose box-shadow places colored glows diagonally. */

@@ -115,7 +115,8 @@ describe('BackgroundStars.vue', () => {
 
     const normalDur = (normalWrapper.find('.star-small').element as HTMLElement).style
       .animationDuration;
-    const slowDur = (slowWrapper.find('.star-small').element as HTMLElement).style.animationDuration;
+    const slowDur = (slowWrapper.find('.star-small').element as HTMLElement).style
+      .animationDuration;
 
     expect(normalDur).toBeTruthy();
     expect(slowDur).toBeTruthy();
