@@ -7,6 +7,11 @@ const waitForRaf = () =>
     requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
   });
 
+/** Count stars in a box-shadow string by counting comma-separated values. */
+function countShadows(shadow: string): number {
+  return shadow ? shadow.split(',').length : 0;
+}
+
 describe('BackgroundStars.vue', () => {
   it('emits background-ready event after stars generation', async () => {
     const wrapper = mount(BackgroundStars);
@@ -15,29 +20,58 @@ describe('BackgroundStars.vue', () => {
     expect(wrapper.emitted('background-ready')).toHaveLength(1);
   });
 
-  it('generates correct number of star elements with default props', async () => {
+  it('renders all required sky elements', async () => {
     const wrapper = mount(BackgroundStars);
     await waitForRaf();
 
-    const starsContainer = wrapper.find('.stars');
-    const starsCrossContainer = wrapper.find('.stars-cross');
-    const starsCrossAuxContainer = wrapper.find('.stars-cross-aux');
-
-    // mainLoops=250 × 4 + crossLoops=150 star-4s + auxLoops=50 × 0.5 star-5s = 1175
-    expect(starsContainer.element.querySelectorAll('.star').length).toBe(1175);
-    // 150 iterations × 2 elements (blur + star) = 300
-    expect(starsCrossContainer.element.children.length).toBe(300);
-    // 50 iterations × 2 elements (blur + star) = 100
-    expect(starsCrossAuxContainer.element.children.length).toBe(100);
+    expect(wrapper.find('.sky').exists()).toBe(true);
+    expect(wrapper.find('.sky-base').exists()).toBe(true);
+    expect(wrapper.find('.star-tiny').exists()).toBe(true);
+    expect(wrapper.find('.star-small').exists()).toBe(true);
+    expect(wrapper.find('.star-med').exists()).toBe(true);
+    expect(wrapper.find('.star-large').exists()).toBe(true);
+    expect(wrapper.find('.star-bright').exists()).toBe(true);
+    expect(wrapper.find('.nebula-layer').exists()).toBe(true);
   });
 
-  it('scales star count with starCount prop', async () => {
-    const wrapper = mount(BackgroundStars, { props: { starCount: 200 } });
+  it('populates box-shadow on star layers after mount', async () => {
+    const wrapper = mount(BackgroundStars);
     await waitForRaf();
-    // mainLoops=50, crossLoops=30, auxLoops=10 → far fewer than default 1175
-    const stars = wrapper.find('.stars').element.querySelectorAll('.star');
-    expect(stars.length).toBeGreaterThan(0);
-    expect(stars.length).toBeLessThan(1175);
+
+    const tinyEl = wrapper.find('.star-tiny').element as HTMLElement;
+    expect(countShadows(tinyEl.style.boxShadow)).toBeGreaterThan(0);
+
+    const nebula = wrapper.find('.nebula-layer').element as HTMLElement;
+    expect(countShadows(nebula.style.boxShadow)).toBeGreaterThan(0);
+  });
+
+  it('smaller starCount produces fewer stars than the default', async () => {
+    const defaultWrapper = mount(BackgroundStars);
+    const smallWrapper = mount(BackgroundStars, { props: { starCount: 100 } });
+    await waitForRaf();
+
+    const defaultCount = countShadows(
+      (defaultWrapper.find('.star-small').element as HTMLElement).style.boxShadow
+    );
+    const smallCount = countShadows(
+      (smallWrapper.find('.star-small').element as HTMLElement).style.boxShadow
+    );
+    expect(smallCount).toBeGreaterThan(0);
+    expect(smallCount).toBeLessThan(defaultCount);
+  });
+
+  it('dense density produces more stars than normal', async () => {
+    const normalWrapper = mount(BackgroundStars);
+    const denseWrapper = mount(BackgroundStars, { props: { density: 'dense' } });
+    await waitForRaf();
+
+    const normalCount = countShadows(
+      (normalWrapper.find('.star-tiny').element as HTMLElement).style.boxShadow
+    );
+    const denseCount = countShadows(
+      (denseWrapper.find('.star-tiny').element as HTMLElement).style.boxShadow
+    );
+    expect(denseCount).toBeGreaterThan(normalCount);
   });
 
   it('suppresses blink class when disableAnimation is true', async () => {
@@ -52,52 +86,39 @@ describe('BackgroundStars.vue', () => {
     expect(wrapper.element.querySelectorAll('.blink').length).toBeGreaterThan(0);
   });
 
-  it('uses custom palette for colored star layers', async () => {
-    const wrapper = mount(BackgroundStars, { props: { palette: ['#ff0000'] } });
+  it('nebula layer box-shadow contains custom palette colors', async () => {
+    const wrapper = mount(BackgroundStars, { props: { palette: ['#abcdef'] } });
     await waitForRaf();
-    // Cross layer stars should exist (palette only affects colored layers)
-    const crossStars = wrapper.find('.stars-cross').element.querySelectorAll('.star');
-    expect(crossStars.length).toBeGreaterThan(0);
+
+    const nebulaShadow = (wrapper.find('.nebula-layer').element as HTMLElement).style.boxShadow;
+    expect(nebulaShadow).toContain('#abcdef');
   });
 
   it('accepts density and speed props without errors', async () => {
     const wrapper = mount(BackgroundStars, { props: { density: 'dense', speed: 2 } });
     await waitForRaf();
     expect(wrapper.emitted('background-ready')).toBeTruthy();
-    // dense × 2× speed: more stars than default
-    const stars = wrapper.find('.stars').element.querySelectorAll('.star');
-    expect(stars.length).toBeGreaterThan(1175);
-  });
-
-  it('renders all required sky elements', () => {
-    const wrapper = mount(BackgroundStars);
-
-    expect(wrapper.find('.sky').exists()).toBe(true);
-    expect(wrapper.find('.sky-base').exists()).toBe(true);
-    expect(wrapper.find('.stars').exists()).toBe(true);
-    expect(wrapper.find('.stars-cross').exists()).toBe(true);
-    expect(wrapper.find('.stars-cross-aux').exists()).toBe(true);
+    expect(wrapper.find('.star-tiny').exists()).toBe(true);
   });
 
   it('applies correct styles to sky container', () => {
     const wrapper = mount(BackgroundStars);
     const sky = wrapper.find('.sky');
-
-    // Check that the sky element has the correct classes and exists
     expect(sky.exists()).toBe(true);
     expect(sky.classes()).toContain('sky');
   });
 
-  it('generates stars with background colors applied', async () => {
-    const wrapper = mount(BackgroundStars);
+  it('speed prop scales animation duration on blinking layers', async () => {
+    const normalWrapper = mount(BackgroundStars, { props: { speed: 1 } });
+    const slowWrapper = mount(BackgroundStars, { props: { speed: 3 } });
     await waitForRaf();
 
-    const stars = wrapper.find('.stars-cross').element.querySelectorAll('.star');
-    expect(stars.length).toBeGreaterThan(0);
+    const normalDur = (normalWrapper.find('.star-small').element as HTMLElement).style
+      .animationDuration;
+    const slowDur = (slowWrapper.find('.star-small').element as HTMLElement).style.animationDuration;
 
-    const starsWithColors = Array.from(stars).filter(
-      (star) => (star as HTMLElement).style.backgroundColor?.length > 0
-    );
-    expect(starsWithColors.length).toBeGreaterThan(0);
+    expect(normalDur).toBeTruthy();
+    expect(slowDur).toBeTruthy();
+    expect(parseFloat(slowDur)).toBeGreaterThan(parseFloat(normalDur));
   });
 });
