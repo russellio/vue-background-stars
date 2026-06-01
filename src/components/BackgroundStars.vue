@@ -28,25 +28,20 @@ function createStarElement(
 ): HTMLElement {
   const star = document.createElement('div');
   star.className = `star ${starClass}`;
-
-  let style = `top:${top}vh;left:${left}vw;animation-duration:${duration}s;`;
-
-  if (color) {
-    style += `background-color:${color};`;
-  }
-
-  if (shadow) {
-    style += `box-shadow:0px 0 6px 1px ${shadow};`;
-  }
-
-  star.style.cssText = style;
+  star.style.top = `${top}vh`;
+  star.style.left = `${left}vw`;
+  star.style.animationDuration = `${duration}s`;
+  if (color) star.style.backgroundColor = color;
+  if (shadow) star.style.boxShadow = `0px 0 6px 1px ${shadow}`;
   return star;
 }
 
 function createBlurElement(top: number, left: number, color: string): HTMLElement {
   const blur = document.createElement('div');
   blur.className = 'blur';
-  blur.style.cssText = `top:${top}%;left:${left}%;background-color:${color}`;
+  blur.style.top = `${top}%`;
+  blur.style.left = `${left}%`;
+  blur.style.backgroundColor = color;
   return blur;
 }
 
@@ -60,7 +55,11 @@ function createStarWithPercentage(
 ): HTMLElement {
   const star = document.createElement('div');
   star.className = `star ${starClass}`;
-  star.style.cssText = `top:${top}%;left:${left}%;animation-duration:${duration}s;background-color:${color};box-shadow:0px 0 6px 1px ${shadow};`;
+  star.style.top = `${top}%`;
+  star.style.left = `${left}%`;
+  star.style.animationDuration = `${duration}s`;
+  star.style.backgroundColor = color;
+  star.style.boxShadow = `0px 0 6px 1px ${shadow}`;
   return star;
 }
 
@@ -73,7 +72,12 @@ function createStar2WithPercentage(
 ): HTMLElement {
   const star = document.createElement('div');
   star.className = 'star star-2';
-  star.style.cssText = `top:${top}%;left:${left}%;animation-duration:${duration}s;background-color:${color};box-shadow:0px 0 10px 1px ${shadow};opacity:0.7`;
+  star.style.top = `${top}%`;
+  star.style.left = `${left}%`;
+  star.style.animationDuration = `${duration}s`;
+  star.style.backgroundColor = color;
+  star.style.boxShadow = `0px 0 10px 1px ${shadow}`;
+  star.style.opacity = '0.7';
   return star;
 }
 
