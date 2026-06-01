@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  label: {
-    type: String,
-    default: '',
-  },
-  showIcon: {
-    type: Boolean,
-    default: true,
-  },
+interface Props {
+  modelValue?: boolean;
+  label?: string;
+  showIcon?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
+  label: '',
+  showIcon: true,
 });
 
 const emit = defineEmits<{
