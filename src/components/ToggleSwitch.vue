@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 
 defineOptions({ name: 'ToggleSwitch' });
+
+const id = useId();
 
 interface Props {
   modelValue?: boolean;
@@ -26,7 +28,7 @@ const internalValue = computed({
 </script>
 
 <template>
-  <label class="toggle-switch-label">
+  <label :for="id" class="toggle-switch-label">
     <span
       v-if="label"
       class="toggle-switch-text"
@@ -36,6 +38,7 @@ const internalValue = computed({
     </span>
     <div class="toggle-switch-wrapper">
       <input
+        :id="id"
         type="checkbox"
         role="switch"
         :aria-checked="internalValue"
