@@ -1,12 +1,22 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
+import {
+  BLINK_DURATIONS,
+  BRIGHT_STAR_GLOW,
+  DENSITY_SCALE,
+  NEBULA_FRACTIONS,
+  NEBULA_GLOW,
+  NEBULA_MAX_Y,
+  STAR_FIELD_SIZE,
+  STAR_LAYER_FRACTIONS,
+} from '../config';
 
 defineOptions({ name: 'BackgroundStars' });
 
 interface Props {
   /** Total number of base stars to generate. Default: 1000. */
   starCount?: number;
-  /** Color palette for the cross/aux star layers. Default: built-in night-sky palette. */
+  /** Color palette for the nebula glow layers. Default: built-in night-sky palette. */
   palette?: readonly string[];
   /** Scales the star count up or down. Default: 'normal'. */
   density?: 'sparse' | 'normal' | 'dense';
@@ -27,211 +37,107 @@ const props = withDefaults(defineProps<Props>(), {
   disableAnimation: false,
 });
 
-const emit = defineEmits<{
-  'background-ready': [];
-}>();
+const emit = defineEmits<{ 'background-ready': [] }>();
 
-const starsContainer = ref<HTMLElement>();
-const starsCrossContainer = ref<HTMLElement>();
-const starsCrossAuxContainer = ref<HTMLElement>();
-
-// Returns integer in [min, max) — max is exclusive.
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function createStarElement(
-  starClass: string,
-  top: number,
-  left: number,
-  duration: number,
-  color?: string,
-  shadow?: string
-): HTMLElement {
-  const star = document.createElement('div');
-  star.className = `star ${starClass}`;
-  star.style.top = `${top}vh`;
-  star.style.left = `${left}vw`;
-  star.style.animationDuration = `${duration}s`;
-  if (color) star.style.backgroundColor = color;
-  if (shadow) star.style.boxShadow = `0px 0 6px 1px ${shadow}`;
-  return star;
+/** Build a box-shadow string that positions `count` stars of the given color. */
+function makeStarShadow(count: number, color: string, blur = 0, spread = 0): string {
+  return Array.from({ length: count }, () => {
+    const x = randomInt(0, STAR_FIELD_SIZE);
+    const y = randomInt(0, STAR_FIELD_SIZE);
+    return `${x}px ${y}px ${blur}px ${spread}px ${color}`;
+  }).join(', ');
 }
 
-function createBlurElement(top: number, left: number, color: string): HTMLElement {
-  const blur = document.createElement('div');
-  blur.className = 'blur';
-  blur.style.top = `${top}%`;
-  blur.style.left = `${left}%`;
-  blur.style.backgroundColor = color;
-  return blur;
-}
-
-function createStarWithPercentage(
-  starClass: string,
-  top: number,
-  left: number,
-  duration: number,
-  color: string,
-  shadow: string
-): HTMLElement {
-  const star = document.createElement('div');
-  star.className = `star ${starClass}`;
-  star.style.top = `${top}%`;
-  star.style.left = `${left}%`;
-  star.style.animationDuration = `${duration}s`;
-  star.style.backgroundColor = color;
-  star.style.boxShadow = `0px 0 6px 1px ${shadow}`;
-  return star;
-}
-
-function createStar2WithPercentage(
-  top: number,
-  left: number,
-  duration: number,
-  color: string,
-  shadow: string
-): HTMLElement {
-  const star = document.createElement('div');
-  star.className = 'star star-2';
-  star.style.top = `${top}%`;
-  star.style.left = `${left}%`;
-  star.style.animationDuration = `${duration}s`;
-  star.style.backgroundColor = color;
-  star.style.boxShadow = `0px 0 10px 1px ${shadow}`;
-  star.style.opacity = '0.7';
-  return star;
-}
-
-function generateStars() {
-  if (!starsContainer.value || !starsCrossContainer.value || !starsCrossAuxContainer.value) {
-    return;
-  }
-
-  const densityMultipliers = { sparse: 0.5, normal: 1, dense: 2 } as const;
-  const scale = densityMultipliers[props.density];
-  const mainLoops = Math.max(1, Math.floor((props.starCount / 4) * scale));
-  const crossLoops = Math.max(1, Math.floor(props.starCount * 0.15 * scale));
-  const auxLoops = Math.max(1, Math.floor(props.starCount * 0.05 * scale));
-  const spd = props.speed;
-  const blink = props.disableAnimation ? '' : ' blink';
-  const pal = props.palette;
-
-  const starsFragment = document.createDocumentFragment();
-  const crossFragment = document.createDocumentFragment();
-  const auxFragment = document.createDocumentFragment();
-
-  // Generate basic stars in batches to avoid blocking
-  for (let i = 0; i < mainLoops; i++) {
-    starsFragment.appendChild(
-      createStarElement('star-0', randomInt(0, 100), randomInt(0, 100), randomInt(1, 2) * spd)
-    );
-    starsFragment.appendChild(
-      createStarElement(
-        `star-1${blink}`,
-        randomInt(0, 100),
-        randomInt(0, 100),
-        randomInt(2, 5) * spd
-      )
-    );
-    starsFragment.appendChild(
-      createStarElement(
-        `star-2${blink}`,
-        randomInt(0, 100),
-        randomInt(0, 100),
-        randomInt(1, 4) * spd
-      )
-    );
-    starsFragment.appendChild(
-      createStarElement(
-        `star-3${blink}`,
-        randomInt(0, 70),
-        randomInt(0, 100),
-        randomInt(5, 7) * spd
-      )
-    );
-  }
-
-  // Generate cross stars
-  for (let i = 0; i < crossLoops; i++) {
-    starsFragment.appendChild(
-      createStarElement(
-        `star-4${blink}`,
-        randomInt(0, 100),
-        randomInt(0, 100),
-        randomInt(5, 7) * spd
-      )
-    );
-
+/** Build a box-shadow string that positions `count` colored nebula glows. */
+function makeNebulaShadow(count: number, pal: readonly string[], maxY: number): string {
+  return Array.from({ length: count }, () => {
     const color = pal[randomInt(0, pal.length)];
-    crossFragment.appendChild(createBlurElement(randomInt(0, 100), randomInt(0, 100), color));
-    crossFragment.appendChild(
-      createStarWithPercentage(
-        `star-1${blink}`,
-        randomInt(0, 100),
-        randomInt(0, 100),
-        randomInt(6, 12) * spd,
-        color,
-        color
-      )
-    );
-  }
-
-  // Generate auxiliary cross stars
-  for (let i = 0; i < auxLoops; i++) {
-    if (i % 2 === 0) {
-      const color = pal[randomInt(0, pal.length)];
-      starsFragment.appendChild(
-        createStarElement(
-          'star-5',
-          randomInt(0, 50),
-          randomInt(0, 100),
-          randomInt(5, 7) * spd,
-          color
-        )
-      );
-    }
-
-    const color = pal[randomInt(0, pal.length)];
-    auxFragment.appendChild(createBlurElement(randomInt(0, 100), randomInt(0, 100), color));
-    auxFragment.appendChild(
-      createStar2WithPercentage(
-        randomInt(0, 100),
-        randomInt(0, 100),
-        randomInt(4, 10) * spd,
-        color,
-        color
-      )
-    );
-  }
-
-  starsContainer.value.appendChild(starsFragment);
-  starsCrossContainer.value.appendChild(crossFragment);
-  starsCrossAuxContainer.value.appendChild(auxFragment);
+    const x = randomInt(0, STAR_FIELD_SIZE);
+    const y = randomInt(0, maxY);
+    return `${x}px ${y}px ${NEBULA_GLOW.blur}px ${NEBULA_GLOW.spread}px ${color}`;
+  }).join(', ');
 }
 
+interface StarLayers {
+  tiny: string;
+  small: string;
+  med: string;
+  large: string;
+  bright: string;
+  nebula: string;
+  nebulaAux: string;
+}
+
+/** Populated on mount (client-only). null during SSR / before first RAF. */
+const layers = shallowRef<StarLayers | null>(null);
 let rafId: number;
+
+function buildLayers(): StarLayers {
+  const s = DENSITY_SCALE[props.density];
+  const n = props.starCount;
+  const pal = props.palette;
+  const count = (frac: number) => Math.max(1, Math.floor(n * frac * s));
+  const { blur: gb, spread: gs } = BRIGHT_STAR_GLOW;
+
+  return {
+    tiny: makeStarShadow(count(STAR_LAYER_FRACTIONS.tiny), '#fff'),
+    small: makeStarShadow(count(STAR_LAYER_FRACTIONS.small), '#fff'),
+    med: makeStarShadow(count(STAR_LAYER_FRACTIONS.med), '#fff'),
+    large: makeStarShadow(count(STAR_LAYER_FRACTIONS.large), '#fff'),
+    bright: makeStarShadow(count(STAR_LAYER_FRACTIONS.bright), 'rgba(255,255,255,0.85)', gb, gs),
+    nebula: makeNebulaShadow(count(NEBULA_FRACTIONS.main), pal, NEBULA_MAX_Y.main),
+    nebulaAux: makeNebulaShadow(count(NEBULA_FRACTIONS.aux), pal, NEBULA_MAX_Y.aux),
+  };
+}
 
 onMounted(() => {
   rafId = requestAnimationFrame(() => {
-    generateStars();
-    if (starsContainer.value) {
-      emit('background-ready');
-    }
+    layers.value = buildLayers();
+    emit('background-ready');
   });
 });
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId);
+  layers.value = null;
 });
 </script>
 
 <template>
   <div class="sky">
     <div class="sky-base"></div>
-    <div class="stars" ref="starsContainer"></div>
-    <div class="stars-cross" ref="starsCrossContainer"></div>
-    <div class="stars-cross-aux" ref="starsCrossAuxContainer"></div>
+    <template v-if="layers">
+      <!-- Tiny white stars — no animation, densest layer -->
+      <div class="star-layer star-tiny" :style="{ boxShadow: layers.tiny }" />
+      <!-- Larger layers blink unless disableAnimation or prefers-reduced-motion -->
+      <div
+        class="star-layer star-small"
+        :class="{ blink: !disableAnimation }"
+        :style="{ boxShadow: layers.small, animationDuration: `${BLINK_DURATIONS.small * speed}s` }"
+      />
+      <div
+        class="star-layer star-med"
+        :class="{ blink: !disableAnimation }"
+        :style="{ boxShadow: layers.med, animationDuration: `${BLINK_DURATIONS.med * speed}s` }"
+      />
+      <div
+        class="star-layer star-large"
+        :class="{ blink: !disableAnimation }"
+        :style="{ boxShadow: layers.large, animationDuration: `${BLINK_DURATIONS.large * speed}s` }"
+      />
+      <div
+        class="star-layer star-bright"
+        :class="{ blink: !disableAnimation }"
+        :style="{ boxShadow: layers.bright, animationDuration: `${BLINK_DURATIONS.bright * speed}s` }"
+      />
+      <!-- Colored nebula glow layers — rotated to form a diagonal band -->
+      <div class="nebula-layer" :style="{ boxShadow: layers.nebula }" />
+      <div class="nebula-layer nebula-layer-aux" :style="{ boxShadow: layers.nebulaAux }" />
+    </template>
   </div>
 </template>
 
@@ -246,11 +152,9 @@ onBeforeUnmount(() => {
     radial-gradient(at 51% 46%, #041028 0, transparent 50%),
     radial-gradient(at 85% 99%, #330509 0, transparent 50%),
     radial-gradient(at 18% 22%, #111b4f 0, transparent 50%), #041028;
-  transform: scale(1);
 }
 
 .sky-base {
-  content: '';
   background: linear-gradient(to bottom, rgba(55, 5, 105, 0) 0%, rgba(9, 0, 22, 1) 100%);
   width: 100%;
   height: 100px;
@@ -259,101 +163,56 @@ onBeforeUnmount(() => {
   z-index: 3;
 }
 
-.stars {
+/* Single-pixel "stamp" element — all visual comes from box-shadow offsets. */
+.star-layer {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  transition: all 10s linear;
+  border-radius: 50%;
+  background-color: transparent;
 }
 
-.star {
-  position: absolute;
-  border-radius: 50%;
-  background-color: white;
-  opacity: 0.8;
-}
+.star-tiny  { width: 0.5px; height: 0.5px; opacity: 0.8; }
+.star-small { width: 1px;   height: 1px;   opacity: 0.8; }
+.star-med   { width: 1.5px; height: 1.5px; opacity: 0.85; }
+.star-large { width: 2px;   height: 2px;   opacity: 0.9; }
+.star-bright { width: 2.5px; height: 2.5px; opacity: 0.9; }
 
 .blink {
-  animation: blink ease-in-out infinite;
+  animation: blink ease-in-out infinite alternate;
 }
+
+/* Stagger blink start so layers don't all pulse together. */
+.star-med.blink    { animation-delay: -0.5s; }
+.star-large.blink  { animation-delay: -1s; }
+.star-bright.blink { animation-delay: -2s; }
 
 @keyframes blink {
-  50% {
-    opacity: 0;
-  }
+  from { opacity: 0.8; }
+  to   { opacity: 0.2; }
 }
 
-.star-0 {
-  height: 0.5px;
-  width: 0.5px;
-}
-
-.star-1 {
-  height: 1px;
-  width: 1px;
-}
-
-.star-2 {
-  height: 1.5px;
-  width: 1.5px;
-}
-
-.star-3 {
-  height: 2px;
-  width: 2px;
-}
-
-.star-4 {
-  height: 2.5px;
-  width: 2.5px;
-  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.5);
-}
-
-.star-5 {
-  height: 2.5px;
-  width: 2.5px;
-  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.7);
-}
-
-.stars-cross {
+/* Nebula layers: 1px stamps whose box-shadow places colored glows diagonally. */
+.nebula-layer {
   position: absolute;
   top: 10vh;
   left: 0;
-  width: 120vw;
-  height: 20vh;
-  transform: rotate(20deg);
-  transform-origin: top left;
-}
-
-.stars-cross-aux {
-  position: absolute;
-  top: 0vh;
-  left: 10vw;
-  width: 120vw;
-  height: 10vh;
-  transform: rotate(20deg);
-  transform-origin: top left;
-}
-
-.stars-cross > .blur,
-.stars-cross-aux > .blur {
-  position: absolute;
+  width: 1px;
+  height: 1px;
   border-radius: 50%;
-  background-color: white;
-  opacity: 1;
-  filter: blur(15px);
-  width: 5px;
-  height: 10px;
+  background-color: transparent;
+  transform: rotate(20deg);
+  transform-origin: top left;
+}
+
+.nebula-layer-aux {
+  top: 0;
+  left: 10vw;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .blink {
     animation: none !important;
-  }
-  .stars {
-    transition: none !important;
   }
 }
 </style>
