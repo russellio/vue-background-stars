@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 
 interface Props {
   modelValue?: boolean;
@@ -17,18 +17,10 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
 }>();
 
-const internalValue = ref(props.modelValue);
-
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    internalValue.value = newValue;
-  }
-);
-
-const emitChange = () => {
-  emit('update:modelValue', internalValue.value);
-};
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: (v) => emit('update:modelValue', v),
+});
 </script>
 
 <template>
@@ -48,7 +40,6 @@ const emitChange = () => {
         :aria-label="label || 'Toggle'"
         class="toggle-switch-input"
         v-model="internalValue"
-        @change="emitChange"
       />
       <div
         class="toggle-switch-track"
