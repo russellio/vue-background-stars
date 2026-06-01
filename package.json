@@ -33,7 +33,9 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/",
     "format": "prettier --write \"**/*.{js,ts,vue,json,md}\"",
-    "format:check": "prettier --check \"**/*.{js,ts,vue,json,md}\""
+    "format:check": "prettier --check \"**/*.{js,ts,vue,json,md}\"",
+    "prepare": "husky",
+    "prepublishOnly": "npm run type-check && npm run test:run && npm run build"
   },
   "keywords": [
     "vue",
@@ -64,6 +66,15 @@
   "peerDependencies": {
     "vue": "^3.0.0"
   },
+  "lint-staged": {
+    "*.{ts,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,json,md,css}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@types/node": "^24.10.0",
     "@vitejs/plugin-vue": "^6.0.0",
@@ -75,6 +86,8 @@
     "eslint": "^10.4.1",
     "eslint-plugin-vue": "^10.9.1",
     "happy-dom": "^20.0.10",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
     "prettier": "^3.8.3",
     "typescript": "^5.2.2",
     "vite": "^7.0.4",
