@@ -2,7 +2,7 @@
 
 A beautiful animated starry night sky background component for Vue 3. Perfect for landing pages, portfolios, and space-themed applications.
 
-![Vue Background Stars](https://img.shields.io/badge/Vue-3.x-green) ![License](https://img.shields.io/badge/license-MIT-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue) ![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![Vue Background Stars](https://img.shields.io/badge/Vue-3.x-green) ![License](https://img.shields.io/badge/license-MIT-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue) [![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars)
 
 ## ✨ Features
 
@@ -116,7 +116,13 @@ The main background component that renders the animated starry sky. Generates ap
 
 #### Props
 
-None - The component works out of the box without any props.
+| Prop               | Type                              | Default                   | Description                                                            |
+| ------------------ | --------------------------------- | ------------------------- | ---------------------------------------------------------------------- |
+| `starCount`        | `number`                          | `1000`                    | Total base star count, distributed across layers                       |
+| `palette`          | `readonly string[]`               | built-in night-sky colors | Color palette for cross/aux star layers                                |
+| `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                | Scales star count by 0.5×, 1×, or 2×                                   |
+| `speed`            | `number`                          | `1`                       | Animation duration multiplier (1=normal, >1=slower, <1=faster)         |
+| `disableAnimation` | `boolean`                         | `false`                   | Suppresses all blink animations regardless of `prefers-reduced-motion` |
 
 #### Events
 
@@ -219,14 +225,21 @@ Since the component uses scoped styles, you can override them by using more spec
 
 ### Custom Star Count
 
-The component generates a fixed number of stars:
+Use the `starCount` and `density` props to control how many stars are generated:
 
-- 250 iterations × 4 basic stars = 1,000 basic stars
-- 150 cross stars with blur effects
-- 50 auxiliary stars with enhanced effects
-- Total: ~1,575 star elements
+```vue
+<!-- Sparse background (500 base stars) -->
+<BackgroundStars :star-count="500" />
 
-To customize the star count, fork the component and modify the `generateStars()` function in `BackgroundStars.vue`.
+<!-- Dense background with double density -->
+<BackgroundStars density="dense" />
+
+<!-- Slow, dreamy animation -->
+<BackgroundStars :speed="3" />
+
+<!-- Static background (no blinking) -->
+<BackgroundStars :disable-animation="true" />
+```
 
 ## 🌐 Browser Support
 
