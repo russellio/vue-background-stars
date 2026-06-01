@@ -2,7 +2,22 @@
 
 A beautiful animated starry night sky background component for Vue 3. Perfect for landing pages, portfolios, and space-themed applications.
 
-![Vue Background Stars](https://img.shields.io/badge/Vue-3.x-green) ![License](https://img.shields.io/badge/license-MIT-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue) [![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars)
+[![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![npm downloads](https://img.shields.io/npm/dm/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![CI](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml/badge.svg)](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/) **[Live Demo →](https://russellio.github.io/vue-background-stars/)**
+
+## Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [API Reference](#-api-reference)
+  - [BackgroundStars](#backgroundstars-component)
+  - [ToggleSwitch](#toggleswitch-component)
+- [Customization](#-customization)
+- [CSS Custom Properties](#css-custom-properties)
+- [Browser Support](#-browser-support)
+- [Development](#-development)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ## ✨ Features
 
@@ -240,6 +255,34 @@ Use the `starCount` and `density` props to control how many stars are generated:
 <!-- Static background (no blinking) -->
 <BackgroundStars :disable-animation="true" />
 ```
+
+## CSS Custom Properties
+
+Both components expose CSS custom properties so you can theme them without `!important` overrides.
+
+### ToggleSwitch
+
+| Property                   | Default                | Description          |
+| -------------------------- | ---------------------- | -------------------- |
+| `--toggle-track-bg`        | `#d1d5db`              | Track color when off |
+| `--toggle-track-bg-active` | `#3b82f6`              | Track color when on  |
+| `--toggle-thumb-bg`        | `#ffffff`              | Thumb color          |
+| `--toggle-focus-ring`      | `rgba(59,130,246,0.4)` | Focus outline color  |
+
+```css
+/* theme example */
+.my-wrapper {
+  --toggle-track-bg: #1e1e2e;
+  --toggle-track-bg-active: #cba6f7;
+  --toggle-thumb-bg: #cdd6f4;
+}
+```
+
+### BackgroundStars
+
+| Property               | Default              | Description           |
+| ---------------------- | -------------------- | --------------------- |
+| `--starfield-gradient` | built-in purple/pink | Sky gradient override |
 
 ## 🌐 Browser Support
 
