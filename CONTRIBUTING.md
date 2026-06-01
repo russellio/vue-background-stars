@@ -44,6 +44,7 @@ npm run type-check
 ### Commit Messages
 
 Follow conventional commit format:
+
 - `feat: Add new feature`
 - `fix: Fix bug`
 - `docs: Update documentation`
@@ -86,4 +87,3 @@ While we don't have a formal test suite yet, please test your changes:
 ## Questions?
 
 Feel free to open an issue for questions or discussions.
-

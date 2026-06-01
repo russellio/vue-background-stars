@@ -5,3 +5,6 @@ dist
 .vscode
 .idea
 WARP.md
+.remember
+.claude
+CLAUDE.md
