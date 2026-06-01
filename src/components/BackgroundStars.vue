@@ -1,7 +1,30 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-// Define emits for parent communication
+interface Props {
+  /** Total number of base stars to generate. Default: 1000. */
+  starCount?: number;
+  /** Color palette for the cross/aux star layers. Default: built-in night-sky palette. */
+  palette?: readonly string[];
+  /** Scales the star count up or down. Default: 'normal'. */
+  density?: 'sparse' | 'normal' | 'dense';
+  /**
+   * Multiplier applied to every animation duration.
+   * 1 = default speed; >1 = slower (longer duration); <1 = faster (shorter duration).
+   */
+  speed?: number;
+  /** When true, suppresses the blink animation regardless of prefers-reduced-motion. */
+  disableAnimation?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  starCount: 1000,
+  palette: () => ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'],
+  density: 'normal',
+  speed: 1,
+  disableAnimation: false,
+});
+
 const emit = defineEmits<{
   'background-ready': [];
 }>();
@@ -9,9 +32,6 @@ const emit = defineEmits<{
 const starsContainer = ref<HTMLElement>();
 const starsCrossContainer = ref<HTMLElement>();
 const starsCrossAuxContainer = ref<HTMLElement>();
-
-// Color palette for night sky
-const nightSky = ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'];
 
 // Returns integer in [min, max) — max is exclusive.
 function randomInt(min: number, max: number): number {
@@ -86,60 +106,69 @@ function generateStars() {
     return;
   }
 
+  const densityMultipliers = { sparse: 0.5, normal: 1, dense: 2 } as const;
+  const scale = densityMultipliers[props.density];
+  const mainLoops = Math.max(1, Math.floor((props.starCount / 4) * scale));
+  const crossLoops = Math.max(1, Math.floor(props.starCount * 0.15 * scale));
+  const auxLoops = Math.max(1, Math.floor(props.starCount * 0.05 * scale));
+  const spd = props.speed;
+  const blink = props.disableAnimation ? '' : ' blink';
+  const pal = props.palette;
+
   const starsFragment = document.createDocumentFragment();
   const crossFragment = document.createDocumentFragment();
   const auxFragment = document.createDocumentFragment();
 
   // Generate basic stars in batches to avoid blocking
-  for (let i = 0; i < 250; i++) {
+  for (let i = 0; i < mainLoops; i++) {
     starsFragment.appendChild(
-      createStarElement('star-0', randomInt(0, 100), randomInt(0, 100), randomInt(1, 2))
+      createStarElement('star-0', randomInt(0, 100), randomInt(0, 100), randomInt(1, 2) * spd)
     );
     starsFragment.appendChild(
       createStarElement(
-        'star-1 blink',
+        `star-1${blink}`,
         randomInt(0, 100),
         randomInt(0, 100),
-        randomInt(2, 5)
+        randomInt(2, 5) * spd
       )
     );
     starsFragment.appendChild(
       createStarElement(
-        'star-2 blink',
+        `star-2${blink}`,
         randomInt(0, 100),
         randomInt(0, 100),
-        randomInt(1, 4)
+        randomInt(1, 4) * spd
       )
     );
     starsFragment.appendChild(
       createStarElement(
-        'star-3 blink',
+        `star-3${blink}`,
         randomInt(0, 70),
         randomInt(0, 100),
-        randomInt(5, 7)
+        randomInt(5, 7) * spd
       )
     );
   }
 
   // Generate cross stars
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < crossLoops; i++) {
     starsFragment.appendChild(
       createStarElement(
-        'star-4 blink',
+        `star-4${blink}`,
         randomInt(0, 100),
         randomInt(0, 100),
-        randomInt(5, 7)
+        randomInt(5, 7) * spd
       )
     );
 
-    const color = nightSky[randomInt(0, nightSky.length)];
+    const color = pal[randomInt(0, pal.length)];
     crossFragment.appendChild(createBlurElement(randomInt(0, 100), randomInt(0, 100), color));
     crossFragment.appendChild(
       createStarWithPercentage(
-        'star-1 blink',
+        `star-1${blink}`,
         randomInt(0, 100),
         randomInt(0, 100),
-        randomInt(6, 12),
+        randomInt(6, 12) * spd,
         color,
         color
       )
@@ -147,27 +176,27 @@ function generateStars() {
   }
 
   // Generate auxiliary cross stars
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < auxLoops; i++) {
     if (i % 2 === 0) {
-      const color = nightSky[randomInt(0, nightSky.length)];
+      const color = pal[randomInt(0, pal.length)];
       starsFragment.appendChild(
         createStarElement(
           'star-5',
           randomInt(0, 50),
           randomInt(0, 100),
-          randomInt(5, 7),
+          randomInt(5, 7) * spd,
           color
         )
       );
     }
 
-    const color = nightSky[randomInt(0, nightSky.length)];
+    const color = pal[randomInt(0, pal.length)];
     auxFragment.appendChild(createBlurElement(randomInt(0, 100), randomInt(0, 100), color));
     auxFragment.appendChild(
       createStar2WithPercentage(
         randomInt(0, 100),
         randomInt(0, 100),
-        randomInt(4, 10),
+        randomInt(4, 10) * spd,
         color,
         color
       )
