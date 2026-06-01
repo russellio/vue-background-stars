@@ -14,6 +14,7 @@
   "main": "./dist/vue-background-stars.umd.js",
   "module": "./dist/vue-background-stars.es.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": ["**/*.css"],
   "files": [
     "dist",
     "README.md",
