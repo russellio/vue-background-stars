@@ -231,5 +231,14 @@ onMounted(() => {
     width: 5px;
     height: 10px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .blink {
+        animation: none !important;
+    }
+    .stars {
+        transition: none !important;
+    }
+}
 </style>
 

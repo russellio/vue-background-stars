@@ -150,5 +150,15 @@ const emitChange = () => {
     opacity: 0;
     visibility: hidden;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .toggle-switch-track,
+    .toggle-switch-thumb,
+    .toggle-switch-text,
+    .toggle-switch-icon {
+        animation: none !important;
+        transition: none !important;
+    }
+}
 </style>
 
