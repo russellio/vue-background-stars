@@ -13,7 +13,8 @@ const starsCrossAuxContainer = ref<HTMLElement>();
 // Color palette for night sky
 const nightSky = ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'];
 
-function getRandomInt(min: number, max: number): number {
+// Returns integer in [min, max) — max is exclusive.
+function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
@@ -88,30 +89,30 @@ function generateStars() {
   // Generate basic stars in batches to avoid blocking
   for (let i = 0; i < 250; i++) {
     starsFragment.appendChild(
-      createStarElement('star-0', getRandomInt(0, 100), getRandomInt(0, 100), getRandomInt(1, 2))
+      createStarElement('star-0', randomInt(0, 100), randomInt(0, 100), randomInt(1, 2))
     );
     starsFragment.appendChild(
       createStarElement(
         'star-1 blink',
-        getRandomInt(0, 100),
-        getRandomInt(0, 100),
-        getRandomInt(2, 5)
+        randomInt(0, 100),
+        randomInt(0, 100),
+        randomInt(2, 5)
       )
     );
     starsFragment.appendChild(
       createStarElement(
         'star-2 blink',
-        getRandomInt(0, 100),
-        getRandomInt(0, 100),
-        getRandomInt(1, 4)
+        randomInt(0, 100),
+        randomInt(0, 100),
+        randomInt(1, 4)
       )
     );
     starsFragment.appendChild(
       createStarElement(
         'star-3 blink',
-        getRandomInt(0, 70),
-        getRandomInt(0, 100),
-        getRandomInt(5, 7)
+        randomInt(0, 70),
+        randomInt(0, 100),
+        randomInt(5, 7)
       )
     );
   }
@@ -121,20 +122,20 @@ function generateStars() {
     starsFragment.appendChild(
       createStarElement(
         'star-4 blink',
-        getRandomInt(0, 100),
-        getRandomInt(0, 100),
-        getRandomInt(5, 7)
+        randomInt(0, 100),
+        randomInt(0, 100),
+        randomInt(5, 7)
       )
     );
 
-    const color = nightSky[Math.ceil(getRandomInt(0, nightSky.length - 1))];
-    crossFragment.appendChild(createBlurElement(getRandomInt(0, 100), getRandomInt(0, 100), color));
+    const color = nightSky[randomInt(0, nightSky.length)];
+    crossFragment.appendChild(createBlurElement(randomInt(0, 100), randomInt(0, 100), color));
     crossFragment.appendChild(
       createStarWithPercentage(
         'star-1 blink',
-        getRandomInt(0, 100),
-        getRandomInt(0, 100),
-        getRandomInt(6, 12),
+        randomInt(0, 100),
+        randomInt(0, 100),
+        randomInt(6, 12),
         color,
         color
       )
@@ -144,25 +145,25 @@ function generateStars() {
   // Generate auxiliary cross stars
   for (let i = 0; i < 50; i++) {
     if (i % 2 === 0) {
-      const color = nightSky[Math.ceil(getRandomInt(0, nightSky.length - 1))];
+      const color = nightSky[randomInt(0, nightSky.length)];
       starsFragment.appendChild(
         createStarElement(
           'star-5',
-          getRandomInt(0, 50),
-          getRandomInt(0, 100),
-          getRandomInt(5, 7),
+          randomInt(0, 50),
+          randomInt(0, 100),
+          randomInt(5, 7),
           color
         )
       );
     }
 
-    const color = nightSky[Math.ceil(getRandomInt(0, nightSky.length - 1))];
-    auxFragment.appendChild(createBlurElement(getRandomInt(0, 100), getRandomInt(0, 100), color));
+    const color = nightSky[randomInt(0, nightSky.length)];
+    auxFragment.appendChild(createBlurElement(randomInt(0, 100), randomInt(0, 100), color));
     auxFragment.appendChild(
       createStar2WithPercentage(
-        getRandomInt(0, 100),
-        getRandomInt(0, 100),
-        getRandomInt(4, 10),
+        randomInt(0, 100),
+        randomInt(0, 100),
+        randomInt(4, 10),
         color,
         color
       )
