@@ -39,6 +39,9 @@ const emitChange = () => {
         <div class="toggle-switch-wrapper">
             <input
                 type="checkbox"
+                role="switch"
+                :aria-checked="internalValue"
+                :aria-label="label || 'Toggle'"
                 class="toggle-switch-input"
                 v-model="internalValue"
                 @change="emitChange"
@@ -52,7 +55,7 @@ const emitChange = () => {
                 :class="{ 'toggle-switch-thumb-active': internalValue }"
             ></div>
         </div>
-        <div v-if="showIcon" class="toggle-switch-icon" :class="{ 'toggle-switch-icon-visible': internalValue, 'toggle-switch-icon-hidden': !internalValue }">
+        <div v-if="showIcon" class="toggle-switch-icon" aria-hidden="true" :class="{ 'toggle-switch-icon-visible': internalValue, 'toggle-switch-icon-hidden': !internalValue }">
             ⭐
         </div>
     </label>
@@ -103,6 +106,11 @@ const emitChange = () => {
     border-radius: 9999px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s ease-in-out;
+}
+
+.toggle-switch-input:focus-visible ~ .toggle-switch-track {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
 }
 
 .toggle-switch-track-active {
