@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 // Define emits for parent communication
 const emit = defineEmits<{
@@ -101,11 +101,19 @@ function generateStars() {
     starsCrossAuxContainer.value.appendChild(auxFragment);
 }
 
+let rafId: number;
+
 onMounted(() => {
-    requestAnimationFrame(() => {
+    rafId = requestAnimationFrame(() => {
         generateStars();
-        emit('background-ready');
+        if (starsContainer.value) {
+            emit('background-ready');
+        }
     });
+});
+
+onBeforeUnmount(() => {
+    cancelAnimationFrame(rafId);
 });
 </script>
 
