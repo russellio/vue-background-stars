@@ -2,7 +2,22 @@
 
 A beautiful animated starry night sky background component for Vue 3. Perfect for landing pages, portfolios, and space-themed applications.
 
-![Vue Background Stars](https://img.shields.io/badge/Vue-3.x-green) ![License](https://img.shields.io/badge/license-MIT-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue) ![Version](https://img.shields.io/badge/version-1.1.0-blue)
+[![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![npm downloads](https://img.shields.io/npm/dm/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![CI](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml/badge.svg)](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/) **[Live Demo →](https://russellio.github.io/vue-background-stars/)**
+
+## Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [API Reference](#-api-reference)
+  - [BackgroundStars](#backgroundstars-component)
+  - [ToggleSwitch](#toggleswitch-component)
+- [Customization](#-customization)
+- [CSS Custom Properties](#css-custom-properties)
+- [Browser Support](#-browser-support)
+- [Development](#-development)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ## ✨ Features
 
@@ -69,12 +84,9 @@ const showStars = ref(true);
 
 <template>
   <div>
-    <ToggleSwitch 
-      v-model="showStars" 
-      label="Starry Sky"
-    />
+    <ToggleSwitch v-model="showStars" label="Starry Sky" />
     <BackgroundStars v-if="showStars" />
-    
+
     <!-- Your content here -->
     <div class="content">
       <h1>Welcome to my site!</h1>
@@ -119,7 +131,13 @@ The main background component that renders the animated starry sky. Generates ap
 
 #### Props
 
-None - The component works out of the box without any props.
+| Prop               | Type                              | Default                   | Description                                                            |
+| ------------------ | --------------------------------- | ------------------------- | ---------------------------------------------------------------------- |
+| `starCount`        | `number`                          | `1000`                    | Total base star count, distributed across layers                       |
+| `palette`          | `readonly string[]`               | built-in night-sky colors | Color palette for cross/aux star layers                                |
+| `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                | Scales star count by 0.5×, 1×, or 2×                                   |
+| `speed`            | `number`                          | `1`                       | Animation duration multiplier (1=normal, >1=slower, <1=faster)         |
+| `disableAnimation` | `boolean`                         | `false`                   | Suppresses all blink animations regardless of `prefers-reduced-motion` |
 
 #### Events
 
@@ -164,11 +182,11 @@ A fully-featured toggle switch component for controlling the background visibili
 
 #### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `boolean` | `false` | The current toggle state (v-model) |
-| `label` | `string` | `''` | Optional label text to display next to the switch |
-| `showIcon` | `boolean` | `true` | Whether to show the star icon (hidden on mobile by default, visible on screens ≥1024px) |
+| Prop         | Type      | Default | Description                                                                             |
+| ------------ | --------- | ------- | --------------------------------------------------------------------------------------- |
+| `modelValue` | `boolean` | `false` | The current toggle state (v-model)                                                      |
+| `label`      | `string`  | `''`    | Optional label text to display next to the switch                                       |
+| `showIcon`   | `boolean` | `true`  | Whether to show the star icon (hidden on mobile by default, visible on screens ≥1024px) |
 
 #### Events
 
@@ -177,6 +195,7 @@ A fully-featured toggle switch component for controlling the background visibili
 #### Styling
 
 The toggle switch is fully responsive:
+
 - **Mobile**: Vertical layout (column) with icon hidden
 - **Desktop** (≥1024px): Horizontal layout (row) with icon visible
 - Includes smooth transitions and active state styling
@@ -186,11 +205,7 @@ The toggle switch is fully responsive:
 
 ```vue
 <template>
-  <ToggleSwitch 
-    v-model="isEnabled"
-    label="Enable Stars"
-    :showIcon="true"
-  />
+  <ToggleSwitch v-model="isEnabled" label="Enable Stars" :showIcon="true" />
 </template>
 
 <script setup>
@@ -225,13 +240,49 @@ Since the component uses scoped styles, you can override them by using more spec
 
 ### Custom Star Count
 
-The component generates a fixed number of stars:
-- 250 iterations × 4 basic stars = 1,000 basic stars
-- 150 cross stars with blur effects
-- 50 auxiliary stars with enhanced effects
-- Total: ~1,575 star elements
+Use the `starCount` and `density` props to control how many stars are generated:
 
-To customize the star count, fork the component and modify the `generateStars()` function in `BackgroundStars.vue`.
+```vue
+<!-- Sparse background (500 base stars) -->
+<BackgroundStars :star-count="500" />
+
+<!-- Dense background with double density -->
+<BackgroundStars density="dense" />
+
+<!-- Slow, dreamy animation -->
+<BackgroundStars :speed="3" />
+
+<!-- Static background (no blinking) -->
+<BackgroundStars :disable-animation="true" />
+```
+
+## CSS Custom Properties
+
+Both components expose CSS custom properties so you can theme them without `!important` overrides.
+
+### ToggleSwitch
+
+| Property                   | Default                | Description          |
+| -------------------------- | ---------------------- | -------------------- |
+| `--toggle-track-bg`        | `#d1d5db`              | Track color when off |
+| `--toggle-track-bg-active` | `#3b82f6`              | Track color when on  |
+| `--toggle-thumb-bg`        | `#ffffff`              | Thumb color          |
+| `--toggle-focus-ring`      | `rgba(59,130,246,0.4)` | Focus outline color  |
+
+```css
+/* theme example */
+.my-wrapper {
+  --toggle-track-bg: #1e1e2e;
+  --toggle-track-bg-active: #cba6f7;
+  --toggle-thumb-bg: #cdd6f4;
+}
+```
+
+### BackgroundStars
+
+| Property               | Default              | Description           |
+| ---------------------- | -------------------- | --------------------- |
+| `--starfield-gradient` | built-in purple/pink | Sky gradient override |
 
 ## 🌐 Browser Support
 
@@ -241,6 +292,7 @@ To customize the star count, fork the component and modify the `generateStars()`
 - Edge (latest)
 
 Requires browsers with support for:
+
 - CSS animations
 - ES6+ features
 - Vue 3 (^3.0.0)
@@ -248,10 +300,12 @@ Requires browsers with support for:
 ## 🛠️ Tech Stack
 
 ### Core Dependencies
+
 - **Vue**: ^3.5.13 (peer dependency: ^3.0.0)
 - **TypeScript**: ^5.2.2
 
 ### Development Dependencies
+
 - **Vite**: ^7.0.4 - Build tool and dev server
 - **vue-tsc**: ^3.1.3 - TypeScript checking for Vue
 - **@vitejs/plugin-vue**: ^6.0.0 - Vue SFC support
@@ -262,6 +316,7 @@ Requires browsers with support for:
 - **@vitest/ui**: ^4.0.6 - Vitest UI for test visualization
 
 ### Build Output
+
 - **ES Module**: `vue-background-stars.es.js`
 - **UMD**: `vue-background-stars.umd.js`
 - **TypeScript Definitions**: `index.d.ts`
@@ -362,6 +417,7 @@ npm run test:coverage
 ### Testing
 
 The project includes comprehensive tests using Vitest:
+
 - Component rendering tests
 - Event emission tests
 - Prop validation tests
@@ -381,6 +437,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 5. Open a Pull Request
 
 Please ensure your changes include:
+
 - TypeScript type definitions
 - Tests for new functionality
 - Updated documentation if needed

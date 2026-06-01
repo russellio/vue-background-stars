@@ -1,6 +1,6 @@
 {
   "name": "@russellio/vue-background-stars",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A beautiful animated starry night sky background component for Vue 3 with optional toggle control",
   "type": "module",
   "exports": {
@@ -14,6 +14,9 @@
   "main": "./dist/vue-background-stars.umd.js",
   "module": "./dist/vue-background-stars.es.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "files": [
     "dist",
     "README.md",
@@ -28,8 +31,11 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/",
     "format": "prettier --write \"**/*.{js,ts,vue,json,md}\"",
-    "format:check": "prettier --check \"**/*.{js,ts,vue,json,md}\""
+    "format:check": "prettier --check \"**/*.{js,ts,vue,json,md}\"",
+    "prepare": "husky",
+    "prepublishOnly": "npm run type-check && npm run test:run && npm run build"
   },
   "keywords": [
     "vue",
@@ -60,17 +66,34 @@
   "peerDependencies": {
     "vue": "^3.0.0"
   },
+  "lint-staged": {
+    "*.{ts,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,json,md,css}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@types/node": "^24.10.0",
     "@vitejs/plugin-vue": "^6.0.0",
+    "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "^4.0.6",
+    "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/test-utils": "^2.4.6",
+    "axe-core": "^4.12.0",
+    "eslint": "^10.4.1",
+    "eslint-plugin-vue": "^10.9.1",
     "happy-dom": "^20.0.10",
-    "jsdom": "^27.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "prettier": "^3.8.3",
     "typescript": "^5.2.2",
     "vite": "^7.0.4",
     "vite-plugin-dts": "^4.3.0",
     "vitest": "^4.0.6",
+    "vitest-axe": "^0.1.0",
     "vue": "^3.5.13",
     "vue-tsc": "^3.1.3"
   }

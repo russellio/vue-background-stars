@@ -12,11 +12,7 @@ const showStars = ref(true);
   <div class="demo-container">
     <!-- Toggle Control -->
     <div class="demo-header">
-      <ToggleSwitch
-        label="Starry Sky"
-        v-model="showStars"
-        :showIcon="true"
-      />
+      <ToggleSwitch label="Starry Sky" v-model="showStars" :showIcon="true" />
     </div>
 
     <!-- Background Stars -->
@@ -27,7 +23,9 @@ const showStars = ref(true);
     <!-- Demo Content -->
     <div class="demo-content">
       <h1 class="demo-title">Vue Background Stars</h1>
-      <p class="demo-subtitle">A beautiful animated starry night sky background component for Vue 3</p>
+      <p class="demo-subtitle">
+        A beautiful animated starry night sky background component for Vue 3
+      </p>
 
       <div class="demo-section">
         <h2>✨ Features</h2>
@@ -59,21 +57,21 @@ const showStars = ref(true);
         <p>1. Import the components:</p>
         <div class="demo-code">
           <code>
-import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';<br/>
-import '@russellio/vue-background-stars/style.css';
+            import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';<br />
+            import '@russellio/vue-background-stars/style.css';
           </code>
         </div>
         <p>2. Use in your template:</p>
         <div class="demo-code">
           <code>
-&lt;template&gt;<br/>
-  &nbsp;&lt;ToggleSwitch v-model="showStars" label="Starry Sky" /&gt;<br/>
-  &nbsp;&lt;BackgroundStars v-if="showStars" /&gt;<br/>
-&lt;/template&gt;<br/><br/>
-&lt;script setup&gt;<br/>
-  &nbsp;import { ref } from 'vue';<br/>
-  &nbsp;const showStars = ref(true);<br/>
-&lt;/script&gt;
+            &lt;template&gt;<br />
+            &nbsp;&lt;ToggleSwitch v-model="showStars" label="Starry Sky" /&gt;<br />
+            &nbsp;&lt;BackgroundStars v-if="showStars" /&gt;<br />
+            &lt;/template&gt;<br /><br />
+            &lt;script setup&gt;<br />
+            &nbsp;import { ref } from 'vue';<br />
+            &nbsp;const showStars = ref(true);<br />
+            &lt;/script&gt;
           </code>
         </div>
       </div>
@@ -81,13 +79,13 @@ import '@russellio/vue-background-stars/style.css';
       <div class="demo-section">
         <h2>🎨 Customization</h2>
         <p>
-          The BackgroundStars component is designed to work out of the box, but you can customize
-          it by overriding the CSS classes. The component uses scoped styles, so you can modify
-          the appearance by targeting the component's classes in your global stylesheet.
+          The BackgroundStars component is designed to work out of the box, but you can customize it
+          by overriding the CSS classes. The component uses scoped styles, so you can modify the
+          appearance by targeting the component's classes in your global stylesheet.
         </p>
         <p>
-          The ToggleSwitch component accepts props for customization including <code>label</code>
-          and <code>showIcon</code> to control its appearance.
+          The ToggleSwitch component accepts props for customization including
+          <code>label</code> and <code>showIcon</code> to control its appearance.
         </p>
       </div>
 
@@ -101,16 +99,15 @@ import '@russellio/vue-background-stars/style.css';
 
 <style scoped>
 .default-background {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    z-index: -2;
-    background:
-        radial-gradient(at 51% 46%, #041028 0, transparent 50%),
-        radial-gradient(at 85% 99%, #330509 0, transparent 50%),
-        radial-gradient(at 18% 22%, #111b4f 0, transparent 50%),
-        #041028;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: -2;
+  background:
+    radial-gradient(at 51% 46%, #041028 0, transparent 50%),
+    radial-gradient(at 85% 99%, #330509 0, transparent 50%),
+    radial-gradient(at 18% 22%, #111b4f 0, transparent 50%), #041028;
 }
 
 .background-fade-enter-active {
@@ -125,4 +122,3 @@ import '@russellio/vue-background-stars/style.css';
   opacity: 1;
 }
 </style>
-

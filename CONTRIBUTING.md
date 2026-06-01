@@ -44,6 +44,7 @@ npm run type-check
 ### Commit Messages
 
 Follow conventional commit format:
+
 - `feat: Add new feature`
 - `fix: Fix bug`
 - `docs: Update documentation`
@@ -76,14 +77,19 @@ Follow conventional commit format:
 
 ## Testing
 
-While we don't have a formal test suite yet, please test your changes:
+The project uses Vitest with happy-dom for unit/component tests. Run the full suite before submitting:
 
-1. Build the package successfully
-2. Test the demo application
+```bash
+npm run test:run
+```
+
+Please also:
+
+1. Ensure `npm run type-check` and `npm run lint` pass
+2. Test the demo application with `npm run dev`
 3. Verify in different browsers (Chrome, Firefox, Safari, Edge)
 4. Test responsive behavior on different screen sizes
 
 ## Questions?
 
 Feel free to open an issue for questions or discussions.
-

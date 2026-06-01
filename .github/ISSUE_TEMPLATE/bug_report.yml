@@ -1,0 +1,72 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this bug report!
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: What version of @russellio/vue-background-stars are you using?
+      placeholder: "1.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: vue-version
+    attributes:
+      label: Vue Version
+      placeholder: "3.x"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - BackgroundStars
+        - ToggleSwitch
+        - Plugin installer
+        - Build / TypeScript types
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Steps to reproduce, or a link to a StackBlitz / CodeSandbox that demonstrates the issue.
+      placeholder: |
+        1. Install package
+        2. Add <BackgroundStars />
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, bundler (Vite / Webpack / Nuxt / etc.)
+      placeholder: "Chrome 125, macOS, Vite 5"
