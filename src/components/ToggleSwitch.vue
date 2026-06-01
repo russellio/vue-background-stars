@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+defineOptions({ name: 'ToggleSwitch' });
+
 interface Props {
   modelValue?: boolean;
   label?: string;

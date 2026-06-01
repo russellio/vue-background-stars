@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
+defineOptions({ name: 'BackgroundStars' });
+
 interface Props {
   /** Total number of base stars to generate. Default: 1000. */
   starCount?: number;
