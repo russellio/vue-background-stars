@@ -8,3 +8,6 @@ WARP.md
 .remember
 .claude
 CLAUDE.md
+.agents
+skills-lock.json
+coverage/

@@ -39,5 +39,6 @@ export default defineConfig({
     },
     cssCodeSplit: false,
     cssMinify: true,
+    sourcemap: true,
   },
 });
