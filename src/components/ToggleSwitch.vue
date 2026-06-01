@@ -107,19 +107,19 @@ const internalValue = computed({
 .toggle-switch-track {
   width: 2rem;
   height: 1rem;
-  background-color: #d1d5db;
+  background-color: var(--toggle-track-bg, #d1d5db);
   border-radius: 9999px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s ease-in-out;
 }
 
 .toggle-switch-input:focus-visible ~ .toggle-switch-track {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--toggle-focus-ring, #3b82f6);
   outline-offset: 2px;
 }
 
 .toggle-switch-track-active {
-  background-color: #3b82f6;
+  background-color: var(--toggle-track-bg-active, #3b82f6);
 }
 
 .toggle-switch-thumb {
@@ -128,7 +128,7 @@ const internalValue = computed({
   top: 0;
   width: 1rem;
   height: 1rem;
-  background-color: white;
+  background-color: var(--toggle-thumb-bg, white);
   border-radius: 9999px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transform: translateX(0);
