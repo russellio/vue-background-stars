@@ -1,97 +1,93 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, shallowRef } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const BackgroundStars = defineAsyncComponent(() => import('@/components/BackgroundStars.vue'));
-const showStars = ref(true);
+const showStars = shallowRef(true);
+
+const features = [
+  'Vue 3 component with TypeScript definitions',
+  'Configurable star count, density, color palette, and animation speed',
+  'Box-shadow based star layers generated on the first animation frame',
+  'Respects reduced-motion preferences and supports disabling animation',
+  'No runtime dependencies beyond Vue',
+  'Optional toggle switch component included',
+];
+
+const installCommand = 'npm install @russellio/vue-background-stars';
+
+const importExample = `import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';
+import '@russellio/vue-background-stars/style.css';`;
+
+const usageExample = `<script setup lang="ts">
+import { shallowRef } from 'vue';
+import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';
+
+const showStars = shallowRef(true);
+<${'/script'}>
+
+<template>
+  <ToggleSwitch v-model="showStars" label="Starfield" />
+  <BackgroundStars v-if="showStars" />
+</template>`;
 </script>
 
 <template>
   <div class="default-background" :class="{ 'fade-out': showStars }"></div>
 
   <div class="demo-container">
-    <!-- Toggle Control -->
     <div class="demo-header">
-      <ToggleSwitch label="Starry Sky" v-model="showStars" :showIcon="true" />
+      <ToggleSwitch label="Starfield" v-model="showStars" :showIcon="false" />
     </div>
 
-    <!-- Background Stars -->
     <Transition name="background-fade" appear>
       <BackgroundStars v-if="showStars" />
     </Transition>
 
-    <!-- Demo Content -->
     <div class="demo-content">
       <h1 class="demo-title">Vue Background Stars</h1>
       <p class="demo-subtitle">
-        A beautiful animated starry night sky background component for Vue 3
+        A lightweight animated starfield background component for Vue 3 applications.
       </p>
 
       <div class="demo-section">
-        <h2>✨ Features</h2>
+        <h2>Features</h2>
         <ul class="demo-features">
-          <li>Animated twinkling stars with realistic night sky colors</li>
-          <li>Performance optimized with DocumentFragment for efficient rendering</li>
-          <li>Zero external dependencies (except Vue 3)</li>
-          <li>TypeScript support out of the box</li>
-          <li>Fully customizable and responsive</li>
-          <li>Optional toggle switch component included</li>
-          <li>Perfect for landing pages, portfolios, and space-themed applications</li>
+          <li v-for="feature in features" :key="feature">{{ feature }}</li>
         </ul>
       </div>
 
       <div class="demo-section">
-        <h2>📦 Installation</h2>
-        <p>Install the package via npm:</p>
+        <h2>Installation</h2>
+        <p>Install the package from npm:</p>
         <div class="demo-code">
-          <code>npm install @russellio/vue-background-stars</code>
-        </div>
-        <p>Or via yarn:</p>
-        <div class="demo-code">
-          <code>yarn add @russellio/vue-background-stars</code>
+          <code>{{ installCommand }}</code>
         </div>
       </div>
 
       <div class="demo-section">
-        <h2>🚀 Quick Start</h2>
-        <p>1. Import the components:</p>
-        <div class="demo-code">
-          <code>
-            import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';<br />
-            import '@russellio/vue-background-stars/style.css';
-          </code>
-        </div>
-        <p>2. Use in your template:</p>
-        <div class="demo-code">
-          <code>
-            &lt;template&gt;<br />
-            &nbsp;&lt;ToggleSwitch v-model="showStars" label="Starry Sky" /&gt;<br />
-            &nbsp;&lt;BackgroundStars v-if="showStars" /&gt;<br />
-            &lt;/template&gt;<br /><br />
-            &lt;script setup&gt;<br />
-            &nbsp;import { ref } from 'vue';<br />
-            &nbsp;const showStars = ref(true);<br />
-            &lt;/script&gt;
-          </code>
-        </div>
+        <h2>Quick Start</h2>
+        <p>Import the components and stylesheet:</p>
+        <pre class="demo-code"><code>{{ importExample }}</code></pre>
+        <p>Render the background behind your page content:</p>
+        <pre class="demo-code"><code>{{ usageExample }}</code></pre>
       </div>
 
       <div class="demo-section">
-        <h2>🎨 Customization</h2>
+        <h2>Customization</h2>
         <p>
-          The BackgroundStars component is designed to work out of the box, but you can customize it
-          by overriding the CSS classes. The component uses scoped styles, so you can modify the
-          appearance by targeting the component's classes in your global stylesheet.
+          Use props such as <code>starCount</code>, <code>density</code>, <code>speed</code>,
+          <code>palette</code>, and <code>disableAnimation</code> to tune the generated starfield.
         </p>
         <p>
-          The ToggleSwitch component accepts props for customization including
-          <code>label</code> and <code>showIcon</code> to control its appearance.
+          The included <code>ToggleSwitch</code> is optional. It is useful for demos and settings
+          panels, but <code>BackgroundStars</code> can be used on its own.
         </p>
       </div>
 
       <div class="demo-footer">
-        <p>Built with ❤️ using Vue 3 + TypeScript</p>
-        <p>Toggle the switch above to see the stars appear and disappear!</p>
+        <p>Built with Vue 3 and TypeScript.</p>
+        <p>Use the switch above to compare the starfield with the fallback background.</p>
       </div>
     </div>
   </div>
