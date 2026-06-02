@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
   starCount: 1000,
   palette: () => ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'],
   density: 'normal',
-  speed: 1,
+  speed: 0.8,
   disableAnimation: false,
 });
 
