@@ -1,65 +1,53 @@
 # Vue Background Stars
 
-A beautiful animated starry night sky background component for Vue 3. Perfect for landing pages, portfolios, and space-themed applications.
+An animated starfield background component for Vue 3. It is intended for projects that need a lightweight, configurable night-sky effect without bringing in a canvas renderer or animation dependency.
 
-[![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![npm downloads](https://img.shields.io/npm/dm/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![CI](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml/badge.svg)](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/) **[Live Demo →](https://russellio.github.io/vue-background-stars/)**
+[![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![npm downloads](https://img.shields.io/npm/dm/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![CI](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml/badge.svg)](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/)
 
-## Table of Contents
+[Live demo](https://russellio.github.io/vue-background-stars/)
 
-- [Features](#-features)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [API Reference](#-api-reference)
-  - [BackgroundStars](#backgroundstars-component)
-  - [ToggleSwitch](#toggleswitch-component)
-- [Customization](#-customization)
-- [CSS Custom Properties](#css-custom-properties)
-- [Browser Support](#-browser-support)
-- [Development](#-development)
-- [Contributing](#-contributing)
-- [License](#-license)
+## Contents
 
-## ✨ Features
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+- [Styling](#styling)
+- [Browser Support](#browser-support)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
-- 🌟 **Animated Twinkling Stars** - Generates over 1,500 animated star elements with multiple sizes (0.5px to 2.5px) and realistic twinkling animations
-- 🎨 **Beautiful Color Palette** - Rich gradient night sky background with multiple radial gradients and a custom color palette (#280F36, #632B6C, #BE6590, #FFC1A0, #FE9C7F)
-- ⚡ **Performance Optimized** - Uses DocumentFragment for efficient DOM manipulation and `requestAnimationFrame` for smooth rendering
-- 📦 **Zero Dependencies** - Only requires Vue 3 (no external dependencies)
-- 🔧 **TypeScript Support** - Fully typed with TypeScript 5.2.2 out of the box
-- 🎛️ **Optional Toggle Control** - Includes a fully-featured toggle switch component with responsive design and icon support
-- 📱 **Fully Responsive** - Works seamlessly on all screen sizes with mobile-optimized toggle switch
-- 🎭 **Easy to Customize** - Well-structured components with scoped styles ready for customization
-- 🧪 **Fully Tested** - Comprehensive test suite using Vitest with 100% component coverage
-- 📦 **Multiple Build Formats** - Available as ES modules and UMD for maximum compatibility
+## Features
 
-## 📦 Installation
+- Vue 3 component with TypeScript definitions
+- Configurable star count, density, color palette, and animation speed
+- Respects `prefers-reduced-motion`; animations can also be disabled with a prop
+- Generates the star layers on mount with `requestAnimationFrame`
+- Includes an optional `ToggleSwitch` component for simple visibility controls
+- Ships ESM, UMD, CSS, and declaration files
+- No runtime dependencies beyond Vue
 
-Install the package via npm:
+## Installation
 
 ```bash
 npm install @russellio/vue-background-stars
 ```
 
-Or via yarn:
-
 ```bash
 yarn add @russellio/vue-background-stars
 ```
-
-Or via pnpm:
 
 ```bash
 pnpm add @russellio/vue-background-stars
 ```
 
-## 🚀 Quick Start
+## Usage
 
-### Basic Usage
-
-1. Import the component and styles:
+Import the component and stylesheet where you need the background.
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { BackgroundStars } from '@russellio/vue-background-stars';
 import '@russellio/vue-background-stars/style.css';
 </script>
@@ -69,12 +57,10 @@ import '@russellio/vue-background-stars/style.css';
 </template>
 ```
 
-### With Toggle Switch
-
-Use the included `ToggleSwitch` component to control the background:
+The component renders as a fixed background with `z-index: -1`, so your page content should establish its own stacking context when needed.
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';
 import '@russellio/vue-background-stars/style.css';
@@ -83,383 +69,220 @@ const showStars = ref(true);
 </script>
 
 <template>
-  <div>
-    <ToggleSwitch v-model="showStars" label="Starry Sky" />
+  <main class="page">
+    <ToggleSwitch v-model="showStars" label="Starfield" />
     <BackgroundStars v-if="showStars" />
 
-    <!-- Your content here -->
-    <div class="content">
-      <h1>Welcome to my site!</h1>
-    </div>
-  </div>
+    <section class="content">
+      <h1>Launch Console</h1>
+    </section>
+  </main>
 </template>
+
+<style scoped>
+.page {
+  position: relative;
+  min-height: 100vh;
+  color: white;
+}
+</style>
 ```
 
-### Vue Plugin Installation
+### Plugin Install
 
-You can also install it as a Vue plugin:
+You can register both components globally with the default plugin export.
 
-```javascript
+```ts
 import { createApp } from 'vue';
 import VueBackgroundStars from '@russellio/vue-background-stars';
 import '@russellio/vue-background-stars/style.css';
+import App from './App.vue';
 
 const app = createApp(App);
-app.use(VueBackgroundStars);
 
+app.use(VueBackgroundStars);
 app.mount('#app');
 ```
-
-Then use the components globally:
 
 ```vue
 <template>
   <BackgroundStars />
-  <ToggleSwitch v-model="showStars" />
+  <ToggleSwitch v-model="showStars" label="Starfield" />
 </template>
 ```
 
-## 📖 API Reference
+## API
 
-### BackgroundStars Component
+### `BackgroundStars`
 
-The main background component that renders the animated starry sky. Generates approximately 1,575 total star elements across three layers:
-
-- **Main Stars Layer**: 1,175 stars (basic stars of various sizes with twinkling animations)
-- **Cross Stars Layer**: 300 elements (colored stars with blur effects in a diagonal pattern)
-- **Auxiliary Cross Stars Layer**: 100 elements (additional colored stars with enhanced effects)
+Renders the animated starfield. The component builds several `box-shadow` based layers from a single coordinate space, which keeps the DOM small while still allowing dense star patterns.
 
 #### Props
 
-| Prop               | Type                              | Default                   | Description                                                            |
-| ------------------ | --------------------------------- | ------------------------- | ---------------------------------------------------------------------- |
-| `starCount`        | `number`                          | `1000`                    | Total base star count, distributed across layers                       |
-| `palette`          | `readonly string[]`               | built-in night-sky colors | Color palette for cross/aux star layers                                |
-| `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                | Scales star count by 0.5×, 1×, or 2×                                   |
-| `speed`            | `number`                          | `1`                       | Animation duration multiplier (1=normal, >1=slower, <1=faster)         |
-| `disableAnimation` | `boolean`                         | `false`                   | Suppresses all blink animations regardless of `prefers-reduced-motion` |
+| Prop               | Type                              | Default                    | Description                                                                              |
+| ------------------ | --------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
+| `starCount`        | `number`                          | `1000`                     | Base star count used to generate the layer sizes.                                        |
+| `palette`          | `readonly string[]`               | built-in night-sky palette | Colors used for the nebula glow layers.                                                  |
+| `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                 | Multiplies the generated count by `0.5`, `1`, or `2`.                                    |
+| `speed`            | `number`                          | `1`                        | Animation duration multiplier. Values above `1` are slower; values below `1` are faster. |
+| `disableAnimation` | `boolean`                         | `false`                    | Disables blinking animations, independent of reduced-motion settings.                    |
 
 #### Events
 
-- `@background-ready` - Emitted when the background stars have finished generating (after `requestAnimationFrame` completes)
+| Event              | Description                                                               |
+| ------------------ | ------------------------------------------------------------------------- |
+| `background-ready` | Emitted after the star layers are generated on the first animation frame. |
 
 ```vue
-<BackgroundStars @background-ready="handleReady" />
+<BackgroundStars @background-ready="handleBackgroundReady" />
 ```
 
-#### Technical Details
-
-- **Star Sizes**: 6 different star classes (star-0 through star-5) ranging from 0.5px to 2.5px
-- **Animation**: CSS-based `blink` animation with configurable durations (1-12 seconds)
-- **Rendering**: Uses `requestAnimationFrame` for optimal performance
-- **Positioning**: Fixed position background with `z-index: -1` to stay behind content
-- **Background**: Multi-layer radial gradients creating a deep space effect
-
-#### Styling
-
-The component uses scoped styles and will render behind your content (z-index: -1). You can customize the appearance by overriding CSS classes in your global stylesheet:
-
-```css
-/* Override the sky background */
-.vue-background-stars .sky {
-  background: your-custom-gradient;
-}
-
-/* Adjust star colors */
-.vue-background-stars .star {
-  background-color: #your-color;
-}
-
-/* Customize star animations */
-.vue-background-stars .blink {
-  animation-duration: 3s; /* Custom duration */
-}
-```
-
-### ToggleSwitch Component
-
-A fully-featured toggle switch component for controlling the background visibility with responsive design.
-
-#### Props
-
-| Prop         | Type      | Default | Description                                                                             |
-| ------------ | --------- | ------- | --------------------------------------------------------------------------------------- |
-| `modelValue` | `boolean` | `false` | The current toggle state (v-model)                                                      |
-| `label`      | `string`  | `''`    | Optional label text to display next to the switch                                       |
-| `showIcon`   | `boolean` | `true`  | Whether to show the star icon (hidden on mobile by default, visible on screens ≥1024px) |
-
-#### Events
-
-- `@update:modelValue` - Emitted when the toggle state changes
-
-#### Styling
-
-The toggle switch is fully responsive:
-
-- **Mobile**: Vertical layout (column) with icon hidden
-- **Desktop** (≥1024px): Horizontal layout (row) with icon visible
-- Includes smooth transitions and active state styling
-- Icon opacity animates based on toggle state
-
-#### Example
+#### Examples
 
 ```vue
 <template>
-  <ToggleSwitch v-model="isEnabled" label="Enable Stars" :showIcon="true" />
+  <!-- Fewer stars -->
+  <BackgroundStars :star-count="500" density="sparse" />
+
+  <!-- More stars, slower blink animation -->
+  <BackgroundStars density="dense" :speed="2" />
+
+  <!-- Static background -->
+  <BackgroundStars disable-animation />
+
+  <!-- Custom nebula colors -->
+  <BackgroundStars :palette="['#07121f', '#1d4ed8', '#38bdf8', '#f8fafc']" />
 </template>
-
-<script setup>
-import { ref } from 'vue';
-const isEnabled = ref(false);
-</script>
 ```
 
-## 🎨 Customization
+### `ToggleSwitch`
 
-### Overriding Styles
+A small controlled switch component. It uses `v-model` and emits the standard `update:modelValue` event.
 
-Since the component uses scoped styles, you can override them by using more specific selectors or by using CSS custom properties. Here's an example:
+#### Props
 
-```css
-/* Override the sky background */
-.vue-background-stars .sky {
-  background: your-custom-gradient;
-}
+| Prop         | Type      | Default | Description                                              |
+| ------------ | --------- | ------- | -------------------------------------------------------- |
+| `modelValue` | `boolean` | `false` | Current switch state.                                    |
+| `label`      | `string`  | `''`    | Optional visible label.                                  |
+| `showIcon`   | `boolean` | `true`  | Shows the decorative star icon on desktop-sized screens. |
 
-/* Adjust star colors */
-.vue-background-stars .star {
-  background-color: #your-color;
-}
+#### Events
 
-/* Customize star sizes */
-.vue-background-stars .star-0 {
-  width: 1px;
-  height: 1px;
-}
-```
-
-### Custom Star Count
-
-Use the `starCount` and `density` props to control how many stars are generated:
+| Event               | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `update:modelValue` | Emitted with the next boolean state when the switch changes. |
 
 ```vue
-<!-- Sparse background (500 base stars) -->
-<BackgroundStars :star-count="500" />
+<script setup lang="ts">
+import { ref } from 'vue';
+import { ToggleSwitch } from '@russellio/vue-background-stars';
 
-<!-- Dense background with double density -->
-<BackgroundStars density="dense" />
+const enabled = ref(false);
+</script>
 
-<!-- Slow, dreamy animation -->
-<BackgroundStars :speed="3" />
-
-<!-- Static background (no blinking) -->
-<BackgroundStars :disable-animation="true" />
+<template>
+  <ToggleSwitch v-model="enabled" label="Enable stars" />
+</template>
 ```
 
-## CSS Custom Properties
+## Styling
 
-Both components expose CSS custom properties so you can theme them without `!important` overrides.
-
-### ToggleSwitch
-
-| Property                   | Default                | Description          |
-| -------------------------- | ---------------------- | -------------------- |
-| `--toggle-track-bg`        | `#d1d5db`              | Track color when off |
-| `--toggle-track-bg-active` | `#3b82f6`              | Track color when on  |
-| `--toggle-thumb-bg`        | `#ffffff`              | Thumb color          |
-| `--toggle-focus-ring`      | `rgba(59,130,246,0.4)` | Focus outline color  |
+Importing `@russellio/vue-background-stars/style.css` is required. The components include their base styles, but you can still override global selectors or set the toggle CSS variables from a wrapper.
 
 ```css
-/* theme example */
-.my-wrapper {
-  --toggle-track-bg: #1e1e2e;
-  --toggle-track-bg-active: #cba6f7;
-  --toggle-thumb-bg: #cdd6f4;
+.my-page {
+  --toggle-track-bg: #1f2937;
+  --toggle-track-bg-active: #38bdf8;
+  --toggle-thumb-bg: #f8fafc;
+  --toggle-focus-ring: rgba(56, 189, 248, 0.45);
 }
 ```
 
-### BackgroundStars
+| Variable                   | Default   | Used by                |
+| -------------------------- | --------- | ---------------------- |
+| `--toggle-track-bg`        | `#d1d5db` | Toggle track when off  |
+| `--toggle-track-bg-active` | `#3b82f6` | Toggle track when on   |
+| `--toggle-thumb-bg`        | `#ffffff` | Toggle thumb           |
+| `--toggle-focus-ring`      | `#3b82f6` | Keyboard focus outline |
 
-| Property               | Default              | Description           |
-| ---------------------- | -------------------- | --------------------- |
-| `--starfield-gradient` | built-in purple/pink | Sky gradient override |
+For background-specific changes, override the generated classes from your app stylesheet.
 
-## 🌐 Browser Support
+```css
+.sky {
+  background: radial-gradient(at 50% 35%, #0f172a 0, transparent 55%), #020617;
+}
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-Requires browsers with support for:
-
-- CSS animations
-- ES6+ features
-- Vue 3 (^3.0.0)
-
-## 🛠️ Tech Stack
-
-### Core Dependencies
-
-- **Vue**: ^3.5.13 (peer dependency: ^3.0.0)
-- **TypeScript**: ^5.2.2
-
-### Development Dependencies
-
-- **Vite**: ^7.0.4 - Build tool and dev server
-- **vue-tsc**: ^3.1.3 - TypeScript checking for Vue
-- **@vitejs/plugin-vue**: ^6.0.0 - Vue SFC support
-- **vite-plugin-dts**: ^4.3.0 - TypeScript declaration generation
-- **Vitest**: ^4.0.6 - Testing framework
-- **@vue/test-utils**: ^2.4.6 - Vue component testing utilities
-- **happy-dom**: ^20.0.10 - DOM implementation for testing
-- **@vitest/ui**: ^4.0.6 - Vitest UI for test visualization
-
-### Build Output
-
-- **ES Module**: `vue-background-stars.es.js`
-- **UMD**: `vue-background-stars.umd.js`
-- **TypeScript Definitions**: `index.d.ts`
-- **Styles**: `vue-background-stars.css`
-
-## 📝 Development
-
-### Project Structure
-
-```
-vue-background-stars/
-├── src/
-│   ├── components/
-│   │   ├── BackgroundStars.vue
-│   │   ├── ToggleSwitch.vue
-│   │   └── __tests__/
-│   │       ├── BackgroundStars.spec.ts
-│   │       └── ToggleSwitch.spec.ts
-│   ├── __tests__/
-│   │   └── index.spec.ts
-│   └── index.ts
-├── demo/
-│   ├── App.vue
-│   ├── main.ts
-│   ├── index.html
-│   └── vite.config.ts
-├── dist/           # Built files
-├── vite.config.ts  # Main build configuration
-├── vitest.config.ts
-├── tsconfig.json
-└── package.json
+.star-small,
+.star-med,
+.star-large,
+.star-bright {
+  opacity: 0.7;
+}
 ```
 
-### Available Scripts
+## Browser Support
 
-#### Building
+The package targets modern browsers that support Vue 3, CSS animations, and standard ES module output. It is tested against the current versions of Chrome, Firefox, Safari, and Edge.
 
-To build the package:
+## Development
+
+Install dependencies:
 
 ```bash
-npm run build
+npm install
 ```
 
-This runs TypeScript type checking and builds the package in both ES and UMD formats.
-
-#### Development
-
-To develop with the demo application:
+Run the demo app:
 
 ```bash
 npm run dev
 ```
 
-This starts the Vite dev server with the demo application.
-
-#### Preview
-
-To preview the production build:
+Build the package:
 
 ```bash
-npm run preview
+npm run build
 ```
 
-#### Type Checking
-
-To run TypeScript type checking without building:
+Run checks:
 
 ```bash
-npm run type-check
+
 ```
 
-#### Testing
+Common scripts:
 
-Run the test suite:
+| Script                  | Description                               |
+| ----------------------- | ----------------------------------------- |
+| `npm run dev`           | Starts the Vite demo app.                 |
+| `npm run build`         | Type-checks and builds the package.       |
+| `npm run preview`       | Serves the production demo build locally. |
+| `npm run type-check`    | Runs `vue-tsc --noEmit`.                  |
+| `npm test`              | Starts Vitest in watch mode.              |
+| `npm run test:run`      | Runs Vitest once.                         |
+| `npm run test:coverage` | Runs Vitest with coverage.                |
+| `npm run lint`          | Runs ESLint over `src/`.                  |
 
-```bash
-npm test
-```
+Build output is written to `dist/` and includes:
 
-Run tests with UI:
+- `vue-background-stars.es.js`
+- `vue-background-stars.umd.js`
+- `vue-background-stars.css`
+- `index.d.ts`
 
-```bash
-npm run test:ui
-```
+## Contributing
 
-Run tests once (CI mode):
+Issues and pull requests are welcome. For larger changes, open an issue first so the API or implementation direction can be discussed before code is written.
 
-```bash
-npm run test:run
-```
+Before opening a pull request, please run the type check, tests, linting, and formatting check listed above. Updates that change runtime behavior should include tests and README updates where appropriate.
 
-Run tests with coverage:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution guide.
 
-```bash
-npm run test:coverage
-```
+## License
 
-### Testing
+MIT. See [LICENSE](LICENSE) for details.
 
-The project includes comprehensive tests using Vitest:
+## Credits
 
-- Component rendering tests
-- Event emission tests
-- Prop validation tests
-- State management tests
-- Star generation verification tests
-
-Test files are located in `src/components/__tests__/` and `src/__tests__/`.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-Please ensure your changes include:
-
-- TypeScript type definitions
-- Tests for new functionality
-- Updated documentation if needed
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Vue 3](https://vuejs.org/)
-- TypeScript support powered by [vue-tsc](https://github.com/johnsoncodehk/vue-tsc)
-- Bundled with [Vite](https://vitejs.dev/)
-- Testing powered by [Vitest](https://vitest.dev/)
-- Package inspired by [this Codepen](https://codepen.io/jo_Geek/pen/EOKvLE)
-
-## 📧 Support
-
-If you encounter any issues or have questions, please [open an issue](https://github.com/russellio/vue-background-stars/issues) on GitHub.
-
----
-
-Made with ❤️ by [Jon Russell](https://github.com/russellio)
+Built with [Vue](https://vuejs.org/), [Vite](https://vite.dev/), and [Vitest](https://vitest.dev/). Inspired by [this CodePen](https://codepen.io/jo_Geek/pen/EOKvLE).
