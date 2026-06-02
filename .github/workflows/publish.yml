@@ -46,6 +46,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
           scope: '@russellio'
           # OIDC is used automatically if configured on npm
 
@@ -71,6 +72,7 @@ jobs:
           npm whoami 2>&1 || echo "⚠️  Authentication failed - OIDC may not be properly configured"
 
       - name: Publish to npm
-        run: npm publish --access public --provenance
+#        run: npm publish --access public --provenance
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
