@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-06-04
+
+### Features
+
+* **components:** P2-8 add defineOptions name to both components 
+* **config:** P2-6 extract magic numbers to src/config.ts 
+* **stars:** add starCount, palette, density, speed, disableAnimation props 
+* **toggle:** P2-2 expose CSS custom properties for theming 
+* **toggle:** P2-3 explicit for/id wiring via useId() 
+
+### Bug Fixes
+
+* **a11y:** add switch semantics and focus-visible to ToggleSwitch 
+* **a11y:** respect prefers-reduced-motion in both components 
+* **build:** correct dist output path, CSS filename, and types declaration 
+* **ssr:** cancel pending RAF and guard emit on unmount in BackgroundStars 
+* **workflow:** move permissions block under job to correct configuration 
+* **workflow:** pin release-please target-branch to main 
+* **workflow:** relocate permissions block for correct YAML structure 
+* **workflow:** update npm publish command and disable package-manager-cache 
+* **workflow:** wire NPM_TOKEN secret into publish step NODE_AUTH_TOKEN
+
+
+### Refactoring
+
+* **stars:** P2-1 replace imperative DOM with box-shadow starfield 
+* **stars:** remove redundant Math.ceil and fix palette index range 
+* **stars:** replace cssText string building with direct style assignments 
+* **toggle:** migrate to typed defineProps with withDefaults 
+* **toggle:** replace ref+watcher v-model with computed getter/setter
+
 ## [1.1.1] - 2025-11-15
 
 ### Added
