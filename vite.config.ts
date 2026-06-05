@@ -8,8 +8,10 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      insertTypesEntry: true,
+      insertTypesEntry: false,
       rollupTypes: true,
+      outDir: resolve(__dirname, 'dist'),
+      entryRoot: resolve(__dirname, 'src'),
     }),
   ],
   resolve: {
@@ -18,6 +20,7 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: resolve(__dirname, 'dist'),
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'VueBackgroundStars',
@@ -31,10 +34,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue',
         },
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') return 'style.css';
-          return assetInfo.name || '';
-        },
+        assetFileNames: () => 'vue-background-stars.css',
       },
     },
     cssCodeSplit: false,
