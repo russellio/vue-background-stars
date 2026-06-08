@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 import {
   BLINK_DURATIONS,
   BRIGHT_STAR_GLOW,
@@ -39,6 +39,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{ 'background-ready': [] }>();
 
+const skyRef = shallowRef<HTMLElement | null>(null);
+
+function applyPaletteVars(pal: readonly string[]) {
+  const el = skyRef.value;
+  if (!el) return;
+  pal.forEach((color, i) => el.style.setProperty(`--nebula-c${i}`, color));
+}
+
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -52,13 +60,13 @@ function makeStarShadow(count: number, color: string, blur = 0, spread = 0): str
   }).join(', ');
 }
 
-/** Build a box-shadow string that positions `count` colored nebula glows. */
-function makeNebulaShadow(count: number, pal: readonly string[], maxY: number): string {
+/** Build a box-shadow string with `count` nebula glows referencing CSS custom properties. */
+function makeNebulaShadow(count: number, palLength: number, maxY: number): string {
   return Array.from({ length: count }, () => {
-    const color = pal[randomInt(0, pal.length)];
+    const varIdx = randomInt(0, palLength);
     const x = randomInt(0, STAR_FIELD_SIZE);
     const y = randomInt(0, maxY);
-    return `${x}px ${y}px ${NEBULA_GLOW.blur}px ${NEBULA_GLOW.spread}px ${color}`;
+    return `${x}px ${y}px ${NEBULA_GLOW.blur}px ${NEBULA_GLOW.spread}px var(--nebula-c${varIdx})`;
   }).join(', ');
 }
 
@@ -79,7 +87,6 @@ let rafId: number;
 function buildLayers(): StarLayers {
   const s = DENSITY_SCALE[props.density];
   const n = props.starCount;
-  const pal = props.palette;
   const count = (frac: number) => Math.max(1, Math.floor(n * frac * s));
   const { blur: gb, spread: gs } = BRIGHT_STAR_GLOW;
 
@@ -89,17 +96,24 @@ function buildLayers(): StarLayers {
     med: makeStarShadow(count(STAR_LAYER_FRACTIONS.med), '#fff'),
     large: makeStarShadow(count(STAR_LAYER_FRACTIONS.large), '#fff'),
     bright: makeStarShadow(count(STAR_LAYER_FRACTIONS.bright), 'rgba(255,255,255,0.85)', gb, gs),
-    nebula: makeNebulaShadow(count(NEBULA_FRACTIONS.main), pal, NEBULA_MAX_Y.main),
-    nebulaAux: makeNebulaShadow(count(NEBULA_FRACTIONS.aux), pal, NEBULA_MAX_Y.aux),
+    nebula: makeNebulaShadow(count(NEBULA_FRACTIONS.main), props.palette.length, NEBULA_MAX_Y.main),
+    nebulaAux: makeNebulaShadow(
+      count(NEBULA_FRACTIONS.aux),
+      props.palette.length,
+      NEBULA_MAX_Y.aux
+    ),
   };
 }
 
 onMounted(() => {
+  applyPaletteVars(props.palette);
   rafId = requestAnimationFrame(() => {
     layers.value = buildLayers();
     emit('background-ready');
   });
 });
+
+watch(() => props.palette, applyPaletteVars);
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId);
@@ -108,7 +122,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="sky">
+  <div class="sky" ref="skyRef">
     <div class="sky-base"></div>
     <template v-if="layers">
       <!-- Tiny white stars — no animation, densest layer -->
