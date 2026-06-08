@@ -123,8 +123,8 @@ Renders the animated starfield. The component builds several `box-shadow` based 
 | ------------------ | --------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
 | `starCount`        | `number`                          | `1000`                     | Base star count used to generate the layer sizes.                                        |
 | `palette`          | `readonly string[]`               | built-in night-sky palette | Colors used for the nebula glow layers.                                                  |
-| `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                 | Multiplies the generated count by `0.5`, `1`, or `2`.                                    |
-| `speed`            | `number`                          | `1`                        | Animation duration multiplier. Values above `1` are slower; values below `1` are faster. |
+| `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                 | Multiplies the generated count by `0.4`, `0.8`, or `2`.                                  |
+| `speed`            | `number`                          | `0.8`                      | Animation duration multiplier. Values above `1` are slower; values below `1` are faster. |
 | `disableAnimation` | `boolean`                         | `false`                    | Disables blinking animations, independent of reduced-motion settings.                    |
 
 #### Events
@@ -248,7 +248,10 @@ npm run build
 Run checks:
 
 ```bash
-
+npm run type-check
+npm run test:run
+npm run lint
+npm run format:check
 ```
 
 Common scripts:
@@ -269,7 +272,7 @@ Build output is written to `dist/` and includes:
 - `vue-background-stars.es.js`
 - `vue-background-stars.umd.js`
 - `vue-background-stars.css`
-- `index.d.ts`
+- `vue-background-stars.es.d.ts`
 
 ## Contributing
 
