@@ -2,7 +2,7 @@
 
 An animated starfield background component for Vue 3. It is intended for projects that need a lightweight, configurable night-sky effect without bringing in a canvas renderer or animation dependency.
 
-[![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![npm downloads](https://img.shields.io/npm/dm/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![CI](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml/badge.svg)](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/)
+[![npm version](https://img.shields.io/npm/v/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![npm downloads](https://img.shields.io/npm/dm/@russellio/vue-background-stars)](https://www.npmjs.com/package/@russellio/vue-background-stars) [![CI](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml/badge.svg)](https://github.com/russellio/vue-background-stars/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE) ![Vue.js](https://img.shields.io/badge/Vue_3-%2335495e.svg?style=flat&logo=vuedotjs&logoColor=%234FC08D) [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/)
 
 [Live demo](https://russellio.github.io/vue-background-stars/)
 

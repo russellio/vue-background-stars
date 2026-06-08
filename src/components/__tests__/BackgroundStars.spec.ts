@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import BackgroundStars from '../BackgroundStars.vue';
 
@@ -86,12 +87,35 @@ describe('BackgroundStars.vue', () => {
     expect(wrapper.element.querySelectorAll('.blink').length).toBeGreaterThan(0);
   });
 
-  it('nebula layer box-shadow contains custom palette colors', async () => {
+  it('nebula layer box-shadow references CSS custom properties and host element has palette vars', async () => {
     const wrapper = mount(BackgroundStars, { props: { palette: ['#abcdef'] } });
     await waitForRaf();
 
+    const sky = wrapper.find('.sky').element as HTMLElement;
+    expect(sky.style.getPropertyValue('--nebula-c0')).toBe('#abcdef');
+
     const nebulaShadow = (wrapper.find('.nebula-layer').element as HTMLElement).style.boxShadow;
-    expect(nebulaShadow).toContain('#abcdef');
+    expect(nebulaShadow).toContain('var(--nebula-c0)');
+  });
+
+  it('updating palette prop updates CSS vars on host without re-running onMounted', async () => {
+    const wrapper = mount(BackgroundStars, {
+      props: { palette: ['#ff0000', '#00ff00'] },
+    });
+    await waitForRaf();
+
+    const sky = wrapper.find('.sky').element as HTMLElement;
+    expect(sky.style.getPropertyValue('--nebula-c0')).toBe('#ff0000');
+    expect(sky.style.getPropertyValue('--nebula-c1')).toBe('#00ff00');
+
+    const emittedCount = wrapper.emitted('background-ready')!.length;
+
+    await wrapper.setProps({ palette: ['#0000ff', '#ffff00'] });
+    await nextTick();
+
+    expect(sky.style.getPropertyValue('--nebula-c0')).toBe('#0000ff');
+    expect(sky.style.getPropertyValue('--nebula-c1')).toBe('#ffff00');
+    expect(wrapper.emitted('background-ready')!.length).toBe(emittedCount);
   });
 
   it('accepts density and speed props without errors', async () => {
