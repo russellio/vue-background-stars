@@ -12,6 +12,12 @@ body {
   overflow-x: hidden;
 }
 
+h1,
+h2,
+h3 {
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
 #app {
   min-height: 100vh;
   position: relative;
@@ -23,43 +29,55 @@ body {
   z-index: 1;
 }
 
-.demo-header {
-  position: fixed;
+.demo-toggle {
+  position: absolute;
   top: 0;
   right: 0;
   padding: 1.5rem;
   z-index: 1000;
 }
 
-.demo-content {
-  padding: 4rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
+.demo-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  z-index: 1000;
+  background-color: rgb(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .demo-title {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.12em;
+  font-size: 3.6rem;
+  text-transform: lowercase;
+  margin-bottom: 0.5rem;
+  text-shadow: 10px 2px 4px rgba(255, 255, 255, 0.4);
 }
 
 .demo-subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.demo-content {
+  padding: 0;
+  z-index: 10;
+  overflow: auto;
+  height: 80vh;
+  width: 100vw;
 }
 
 .demo-section {
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 14px;
   padding: 2rem;
-  margin: 2rem 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2rem 18%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .demo-section h2 {
@@ -80,7 +98,7 @@ body {
   overflow-x: auto;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .demo-code code {
@@ -88,20 +106,18 @@ body {
 }
 
 .demo-features {
-  list-style: none;
+  /* list-style: none; */
   padding: 0;
+  margin-left: 2rem;
 }
 
 .demo-features li {
-  padding: 0.5rem 0;
-  padding-left: 1.5rem;
+  padding: 0.5rem;
   position: relative;
+  /* list-style-type: disc; */
 }
 
 .demo-features li::before {
-  content: '';
-  position: absolute;
-  left: 0;
   top: 1rem;
   width: 0.35rem;
   height: 0.35rem;
@@ -113,7 +129,12 @@ body {
   text-align: center;
   padding: 2rem;
   margin-top: 4rem;
-  opacity: 0.8;
+  background-color: rgb(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+a {
+  color: #449aef;
 }
 
 @media (max-width: 768px) {

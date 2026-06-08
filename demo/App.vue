@@ -1,9 +1,32 @@
 <script setup lang="ts">
-import { defineAsyncComponent, shallowRef } from 'vue';
+import { defineAsyncComponent, reactive, shallowRef, ref } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
+import DemoControls, { type DemoSettings } from './components/DemoControls.vue';
 
 const BackgroundStars = defineAsyncComponent(() => import('@/components/BackgroundStars.vue'));
 const showStars = shallowRef(true);
+
+const demoControls = ref<InstanceType<typeof DemoControls> | null>(null);
+const hasAutoOpened = shallowRef(false);
+
+function onBackgroundReady() {
+  if (!hasAutoOpened.value) {
+    hasAutoOpened.value = true;
+    demoControls.value?.open();
+  }
+}
+
+const settings = reactive<DemoSettings>({
+  starCount: 1000,
+  density: 'normal',
+  palette: ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'],
+  speed: 0.8,
+  disableAnimation: false,
+});
+
+function onSettingsUpdate(next: DemoSettings) {
+  Object.assign(settings, next);
+}
 
 const features = [
   'Vue 3 component with TypeScript definitions',
@@ -36,25 +59,76 @@ const showStars = shallowRef(true);
   <div class="default-background" :class="{ 'fade-out': showStars }"></div>
 
   <div class="demo-container">
-    <div class="demo-header">
-      <ToggleSwitch label="Starfield" v-model="showStars" :showIcon="false" />
-    </div>
-
     <Transition name="background-fade" appear>
-      <BackgroundStars v-if="showStars" />
+      <BackgroundStars
+        v-if="showStars"
+        :key="`${settings.starCount}-${settings.density}`"
+        :starCount="settings.starCount"
+        :density="settings.density"
+        :palette="settings.palette"
+        :speed="settings.speed"
+        :disableAnimation="settings.disableAnimation"
+        @background-ready="onBackgroundReady"
+      />
     </Transition>
 
-    <div class="demo-content">
+    <div class="demo-header">
       <h1 class="demo-title">Vue Background Stars</h1>
       <p class="demo-subtitle">
-        A lightweight animated starfield background component for Vue 3 applications.
+        A lightweight animated starfield background component for Vue 3 applications
       </p>
 
+      <div class="demo-toggle">
+        <ToggleSwitch label="Starfield" v-model="showStars" :showIcon="false" />
+      </div>
+
+      <DemoControls ref="demoControls" :settings="settings" @update:settings="onSettingsUpdate" />
+    </div>
+
+    <div class="demo-content">
       <div class="demo-section">
         <h2>Features</h2>
         <ul class="demo-features">
           <li v-for="feature in features" :key="feature">{{ feature }}</li>
         </ul>
+      </div>
+
+      <div class="demo-section">
+        <h2>Customization</h2>
+        <p>
+          Use props such as <code>starCount</code>, <code>density</code>, <code>speed</code>,
+          <code>palette</code>, and <code>disableAnimation</code> to tune the generated starfield.
+        </p>
+
+        <p>
+          Click the
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin: 0 0.4rem"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+          icon to adjust these properties and see the change in real time.
+        </p>
+        <p>
+          The included <code>ToggleSwitch</code> is optional. It is useful for demos, setting
+          panels, but <code>BackgroundStars</code> can be used on its own.
+        </p>
+
+        <p>
+          Toggle the switch at the top right to enable and disable the starfield. Use it to compare
+          the starfield with the fallback background.
+        </p>
       </div>
 
       <div class="demo-section">
@@ -73,21 +147,12 @@ const showStars = shallowRef(true);
         <pre class="demo-code"><code>{{ usageExample }}</code></pre>
       </div>
 
-      <div class="demo-section">
-        <h2>Customization</h2>
-        <p>
-          Use props such as <code>starCount</code>, <code>density</code>, <code>speed</code>,
-          <code>palette</code>, and <code>disableAnimation</code> to tune the generated starfield.
-        </p>
-        <p>
-          The included <code>ToggleSwitch</code> is optional. It is useful for demos and settings
-          panels, but <code>BackgroundStars</code> can be used on its own.
-        </p>
-      </div>
-
       <div class="demo-footer">
-        <p>Built with Vue 3 and TypeScript.</p>
-        <p>Use the switch above to compare the starfield with the fallback background.</p>
+        <p>
+          Built by <a href="https://jonrussell.dev">russellio</a> with
+          <a href="https://vuejs.org">Vue 3</a> and
+          <a href="https://www.typescriptlang.org">TypeScript</a>.
+        </p>
       </div>
     </div>
   </div>
