@@ -8,9 +8,9 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      insertTypesEntry: false,
-      rollupTypes: true,
-      outDir: resolve(__dirname, 'dist'),
+      root: __dirname,
+      bundleTypes: true,
+      outDirs: resolve(__dirname, 'dist'),
       entryRoot: resolve(__dirname, 'src'),
     }),
   ],
