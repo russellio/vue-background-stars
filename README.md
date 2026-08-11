@@ -257,7 +257,7 @@ For background-specific changes, override the generated classes from your app st
 ```
 
 The nebula glow is rendered as a set of heavily blurred `box-shadow` stamps that overlap into a
-diffuse band. As of `1.3.0` the blur radius is large enough that adjacent glows merge; previously
+diffuse band. As of `1.3.1` the blur radius is large enough that adjacent glows merge; previously
 they rendered as discrete orbs. Adjust the density of the band with `layerWeights`, and its
 intensity from your stylesheet:
 
