@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { defineAsyncComponent, reactive, shallowRef, ref } from 'vue';
+import { computed, defineAsyncComponent, reactive, shallowRef, ref } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
+import { LAYER_NAMES, type LayerName } from '@/config';
 import DemoControls, { type DemoSettings } from './components/DemoControls.vue';
 
 const BackgroundStars = defineAsyncComponent(() => import('@/components/BackgroundStars.vue'));
@@ -22,15 +23,26 @@ const settings = reactive<DemoSettings>({
   palette: ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'],
   speed: 0.8,
   disableAnimation: false,
+  layerWeights: Object.fromEntries(LAYER_NAMES.map((n) => [n, 1])) as Record<LayerName, number>,
 });
 
 function onSettingsUpdate(next: DemoSettings) {
   Object.assign(settings, next);
 }
 
+/**
+ * Layers are generated once in onMounted, so any setting that feeds buildLayers()
+ * has to participate in the component key to take effect.
+ */
+const remountKey = computed(
+  () =>
+    `${settings.starCount}-${settings.density}-${LAYER_NAMES.map((n) => settings.layerWeights[n]).join(',')}`
+);
+
 const features = [
   'Vue 3 component with TypeScript definitions',
   'Configurable star count, density, color palette, and animation speed',
+  'Per-layer weights to tune or remove individual star types',
   'Box-shadow based star layers generated on the first animation frame',
   'Respects reduced-motion preferences and supports disabling animation',
   'No runtime dependencies beyond Vue',
@@ -62,12 +74,13 @@ const showStars = shallowRef(true);
     <Transition name="background-fade" appear>
       <BackgroundStars
         v-if="showStars"
-        :key="`${settings.starCount}-${settings.density}`"
+        :key="remountKey"
         :starCount="settings.starCount"
         :density="settings.density"
         :palette="settings.palette"
         :speed="settings.speed"
         :disableAnimation="settings.disableAnimation"
+        :layerWeights="settings.layerWeights"
         @background-ready="onBackgroundReady"
       />
     </Transition>
@@ -97,7 +110,14 @@ const showStars = shallowRef(true);
         <h2>Customization</h2>
         <p>
           Use props such as <code>starCount</code>, <code>density</code>, <code>speed</code>,
-          <code>palette</code>, and <code>disableAnimation</code> to tune the generated starfield.
+          <code>palette</code>, <code>layerWeights</code>, and <code>disableAnimation</code> to tune
+          the generated starfield.
+        </p>
+
+        <p>
+          <code>layerWeights</code> scales each star type independently — set a layer to
+          <code>0</code> to remove it entirely. Drop the nebula weights to zero for a plain pinpoint
+          starfield with no colored glow.
         </p>
 
         <p>

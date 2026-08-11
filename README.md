@@ -22,6 +22,7 @@ An animated starfield background component for Vue 3. It is intended for project
 
 - Vue 3 component with TypeScript definitions
 - Configurable star count, density, color palette, and animation speed
+- Per-layer weights to tune or remove individual star types
 - Respects `prefers-reduced-motion`; animations can also be disabled with a prop
 - Generates the star layers on mount with `requestAnimationFrame`
 - Includes an optional `ToggleSwitch` component for simple visibility controls
@@ -126,6 +127,34 @@ Renders the animated starfield. The component builds several `box-shadow` based 
 | `density`          | `'sparse' \| 'normal' \| 'dense'` | `'normal'`                 | Multiplies the generated count by `0.4`, `0.8`, or `2`.                                  |
 | `speed`            | `number`                          | `0.8`                      | Animation duration multiplier. Values above `1` are slower; values below `1` are faster. |
 | `disableAnimation` | `boolean`                         | `false`                    | Disables blinking animations, independent of reduced-motion settings.                    |
+| `layerWeights`     | `LayerWeights`                    | `{}`                       | Per-layer count multipliers. Omitted layers default to `1`; `0` omits the layer.         |
+
+##### `layerWeights`
+
+Scales the number of stars generated for each layer independently. Valid layer names are exported as `LAYER_NAMES`:
+
+`tiny`, `small`, `med`, `large`, `bright`, `nebula`, `nebulaAux`
+
+Each value multiplies that layer's share of `starCount`. A weight of `0` removes the layer entirely — no element is rendered and no animation runs for it. Negative values are clamped to `0`.
+
+```vue
+<script setup lang="ts">
+import { BackgroundStars, type LayerWeights } from '@russellio/vue-background-stars';
+
+// Plain starfield: no colored nebula glow at all.
+const weights: LayerWeights = { nebula: 0, nebulaAux: 0 };
+</script>
+
+<template>
+  <BackgroundStars :layer-weights="weights" />
+</template>
+```
+
+Like `starCount` and `density`, `layerWeights` is read once when the layers are generated on mount. Changing it on a mounted component has no effect — bind a `key` that includes the weights to regenerate:
+
+```vue
+<BackgroundStars :key="JSON.stringify(weights)" :layer-weights="weights" />
+```
 
 #### Events
 
@@ -152,6 +181,12 @@ Renders the animated starfield. The component builds several `box-shadow` based 
 
   <!-- Custom nebula colors -->
   <BackgroundStars :palette="['#07121f', '#1d4ed8', '#38bdf8', '#f8fafc']" />
+
+  <!-- Subtler nebula, no secondary glow band -->
+  <BackgroundStars :layer-weights="{ nebula: 0.5, nebulaAux: 0 }" />
+
+  <!-- Only the faint pinpoint stars -->
+  <BackgroundStars :layer-weights="{ bright: 0, nebula: 0, nebulaAux: 0 }" />
 </template>
 ```
 
@@ -218,6 +253,17 @@ For background-specific changes, override the generated classes from your app st
 .star-large,
 .star-bright {
   opacity: 0.7;
+}
+```
+
+The nebula glow is rendered as a set of heavily blurred `box-shadow` stamps that overlap into a
+diffuse band. As of `1.3.0` the blur radius is large enough that adjacent glows merge; previously
+they rendered as discrete orbs. Adjust the density of the band with `layerWeights`, and its
+intensity from your stylesheet:
+
+```css
+.nebula-layer {
+  opacity: 0.3; /* default: 0.55 */
 }
 ```
 

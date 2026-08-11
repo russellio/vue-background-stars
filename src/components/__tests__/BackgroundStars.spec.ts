@@ -132,6 +132,84 @@ describe('BackgroundStars.vue', () => {
     expect(sky.classes()).toContain('sky');
   });
 
+  it('omits a layer entirely when its weight is 0', async () => {
+    const wrapper = mount(BackgroundStars, {
+      props: { layerWeights: { nebula: 0, nebulaAux: 0 } },
+    });
+    await waitForRaf();
+
+    // findAll, not find: '.nebula-layer' matches both main and aux, so zeroing
+    // only one would silently return the other and pass a bogus assertion.
+    expect(wrapper.findAll('.nebula-layer')).toHaveLength(0);
+    expect(wrapper.find('.star-tiny').exists()).toBe(true);
+  });
+
+  it('zeroing one layer leaves the sibling layer rendered', async () => {
+    const wrapper = mount(BackgroundStars, { props: { layerWeights: { nebula: 0 } } });
+    await waitForRaf();
+
+    expect(wrapper.findAll('.nebula-layer')).toHaveLength(1);
+    expect(wrapper.find('.nebula-layer-aux').exists()).toBe(true);
+  });
+
+  it('a fractional weight reduces that layer without affecting others', async () => {
+    const defaultWrapper = mount(BackgroundStars);
+    const weightedWrapper = mount(BackgroundStars, { props: { layerWeights: { small: 0.25 } } });
+    await waitForRaf();
+
+    const shadowCount = (w: typeof defaultWrapper, sel: string) =>
+      countShadows((w.find(sel).element as HTMLElement).style.boxShadow);
+
+    expect(shadowCount(weightedWrapper, '.star-small')).toBeGreaterThan(0);
+    expect(shadowCount(weightedWrapper, '.star-small')).toBeLessThan(
+      shadowCount(defaultWrapper, '.star-small')
+    );
+    // Unweighted layers are untouched.
+    expect(shadowCount(weightedWrapper, '.star-tiny')).toBe(
+      shadowCount(defaultWrapper, '.star-tiny')
+    );
+  });
+
+  it('a weight above 1 increases that layer', async () => {
+    const defaultWrapper = mount(BackgroundStars);
+    const heavyWrapper = mount(BackgroundStars, { props: { layerWeights: { large: 2 } } });
+    await waitForRaf();
+
+    const defaultCount = countShadows(
+      (defaultWrapper.find('.star-large').element as HTMLElement).style.boxShadow
+    );
+    const heavyCount = countShadows(
+      (heavyWrapper.find('.star-large').element as HTMLElement).style.boxShadow
+    );
+    expect(heavyCount).toBeGreaterThan(defaultCount);
+  });
+
+  it('clamps a negative weight to 0', async () => {
+    const wrapper = mount(BackgroundStars, { props: { layerWeights: { bright: -5 } } });
+    await waitForRaf();
+    expect(wrapper.find('.star-bright').exists()).toBe(false);
+  });
+
+  it('omitting layerWeights matches an explicit all-ones weight map', async () => {
+    const implicitWrapper = mount(BackgroundStars);
+    const explicitWrapper = mount(BackgroundStars, {
+      props: {
+        layerWeights: { tiny: 1, small: 1, med: 1, large: 1, bright: 1, nebula: 1, nebulaAux: 1 },
+      },
+    });
+    await waitForRaf();
+
+    for (const sel of ['.star-tiny', '.star-small', '.star-med', '.star-large', '.star-bright']) {
+      const implicitCount = countShadows(
+        (implicitWrapper.find(sel).element as HTMLElement).style.boxShadow
+      );
+      const explicitCount = countShadows(
+        (explicitWrapper.find(sel).element as HTMLElement).style.boxShadow
+      );
+      expect(explicitCount).toBe(implicitCount);
+    }
+  });
+
   it('speed prop scales animation duration on blinking layers', async () => {
     const normalWrapper = mount(BackgroundStars, { props: { speed: 1 } });
     const slowWrapper = mount(BackgroundStars, { props: { speed: 3 } });

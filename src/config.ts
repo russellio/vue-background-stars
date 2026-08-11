@@ -10,7 +10,33 @@ export const STAR_LAYER_FRACTIONS = {
   bright: 0.15,
 } as const;
 
-/** Nebula (colored glow) layer fractions and vertical extent. */
+/** Every generated layer, in render order. Single source of truth for layer identity. */
+export const LAYER_NAMES = [
+  'tiny',
+  'small',
+  'med',
+  'large',
+  'bright',
+  'nebula',
+  'nebulaAux',
+] as const;
+
+/** Name of a single generated layer. */
+export type LayerName = (typeof LAYER_NAMES)[number];
+
+/**
+ * Per-layer count multipliers. Omitted layers default to `1`.
+ * `0` omits the layer entirely; values are clamped to a minimum of `0`.
+ */
+export type LayerWeights = Partial<Record<LayerName, number>>;
+
+/**
+ * Nebula (colored glow) layer fractions and vertical extent.
+ *
+ * Tuned together with NEBULA_GLOW so adjacent glows overlap and merge into a
+ * diffuse band. The merge condition is `blur + 2*spread >= sqrt(area / count)`;
+ * raising the count without raising the blur produces discrete orbs instead.
+ */
 export const NEBULA_FRACTIONS = {
   main: 0.1,
   aux: 0.05,
@@ -22,8 +48,8 @@ export const NEBULA_MAX_Y = {
   aux: 400,
 } as const;
 
-/** Nebula glow dimensions (px): blur radius and spread radius. */
-export const NEBULA_GLOW = { blur: 18, spread: 4 } as const;
+/** Nebula glow dimensions (px): blur radius and spread radius. See NEBULA_FRACTIONS. */
+export const NEBULA_GLOW = { blur: 150, spread: 20 } as const;
 
 /** Glow for bright white stars: blur and spread (px). */
 export const BRIGHT_STAR_GLOW = { blur: 4, spread: 1 } as const;
