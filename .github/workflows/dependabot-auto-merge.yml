@@ -15,16 +15,26 @@ jobs:
         id: dependabot-metadata
         uses: dependabot/fetch-metadata@v3
 
-      - name: Enable auto-merge
-        if: steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major'
+      # Allowlist, not denylist. `update-type` is the empty string whenever
+      # fetch-metadata cannot classify the PR, and `!= 'semver-major'` would
+      # treat that as safe. Enumerating what may merge makes an unrecognised
+      # value fall through to manual review instead.
+      - name: Enable auto-merge (patch and minor only)
+        if: |
+          steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Flag major bump for manual review
-        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major'
-        run: gh pr comment "$PR_URL" --body "⚠️ This is a **major** version bump and will not be auto-merged. Please review manually."
+      - name: Flag for manual review
+        if: |
+          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-patch' &&
+          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-minor'
+        run: |
+          gh pr comment "$PR_URL" --body "⚠️ Not auto-merged — detected update type \`${UPDATE_TYPE:-<unknown>}\`. Only patch and minor bumps auto-merge. Please review manually."
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          UPDATE_TYPE: ${{ steps.dependabot-metadata.outputs.update-type }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
