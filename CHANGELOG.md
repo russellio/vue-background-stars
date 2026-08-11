@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-08-11
+
+### Features
+
+- **stars:** add `layerWeights` prop — per-layer count multipliers (`{ nebula: 0.5, nebulaAux: 0 }`). Omitted layers default to `1`; a weight of `0` removes the layer's element entirely rather than leaving one stray star behind ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+- **demo:** add a Layers section to the controls panel — one slider per layer (0–2×, `off` at zero), a reset affordance that appears only when weights are customized, and a sliders icon for the panel toggle ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+
+### Bug Fixes
+
+- **stars:** widen nebula glow from `blur: 18 / spread: 4` to `blur: 150 / spread: 20` so adjacent glows overlap and merge into a diffuse band instead of rendering as discrete orbs ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+- **stars:** damp `.nebula-layer` to `opacity: 0.55` so heavily overlapping glows no longer stack toward white ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+- **demo:** fold layer weights into the `BackgroundStars` remount key — layers are generated once in `onMounted`, so weight changes had no effect without a remount ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+- **build:** use `import.meta.dirname` for path resolution in `vite.config.ts` ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+
+### Refactoring
+
+- **config:** add `LAYER_NAMES`, `LayerName`, and `LayerWeights` as the single source of truth for layer identity, exported from the package entry point ([16c7089](https://github.com/russellio/vue-background-stars/commit/16c708984c0a27bd6d5427adbe5fdd1e208bcc17))
+
+### Notes
+
+- This is the first release of the 1.3.x line published to npm; `1.3.0` was tagged on GitHub but never reached the registry, so upgrading from `1.2.2` picks up both changelog entries below and above.
+
 ## [1.3.0](https://github.com/russellio/vue-background-stars/compare/vue-background-stars-v1.2.0...vue-background-stars-v1.3.0) (2026-06-23)
 
 ### Features
