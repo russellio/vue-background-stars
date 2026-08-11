@@ -3,6 +3,7 @@ import BackgroundStars from './components/BackgroundStars.vue';
 import ToggleSwitch from './components/ToggleSwitch.vue';
 
 export { BackgroundStars, ToggleSwitch };
+export { LAYER_NAMES, type LayerName, type LayerWeights } from './config';
 
 const install = {
   install(app: App) {

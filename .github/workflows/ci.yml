@@ -13,20 +13,26 @@ jobs:
     
     strategy:
       matrix:
-        node-version: ['20.12', '22.x', '24.x']
+        node-version: ['20.x', '22.x', '24.x']
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
 
     - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
     - name: Install dependencies
       run: npm install
+
+    - name: Install rolldown Linux native binding
+      if: runner.os == 'Linux'
+      run: |
+        ROLLDOWN_VERSION=$(node -e "console.log(require('./node_modules/rolldown/package.json').version)")
+        npm install "@rolldown/binding-linux-x64-gnu@${ROLLDOWN_VERSION}" --no-save
 
     - name: Type check
       run: npm run type-check

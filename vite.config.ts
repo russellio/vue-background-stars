@@ -8,21 +8,21 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      insertTypesEntry: false,
-      rollupTypes: true,
-      outDir: resolve(__dirname, 'dist'),
-      entryRoot: resolve(__dirname, 'src'),
+      root: import.meta.dirname,
+      bundleTypes: true,
+      outDirs: resolve(import.meta.dirname, 'dist'),
+      entryRoot: resolve(import.meta.dirname, 'src'),
     }),
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(import.meta.dirname, 'src'),
     },
   },
   build: {
-    outDir: resolve(__dirname, 'dist'),
+    outDir: resolve(import.meta.dirname, 'dist'),
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: resolve(import.meta.dirname, 'src/index.ts'),
       name: 'VueBackgroundStars',
       formats: ['es', 'umd'],
       fileName: (format) => `vue-background-stars.${format}.js`,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
+import { LAYER_NAMES, type LayerName } from '@/config';
 import { PALETTES, type PaletteName } from '../composables/usePalettes';
 
 export interface DemoSettings {
@@ -9,7 +10,19 @@ export interface DemoSettings {
   palette: string[];
   speed: number;
   disableAnimation: boolean;
+  layerWeights: Record<LayerName, number>;
 }
+
+/** Human-readable slider labels for each generated layer. */
+const LAYER_LABELS: Record<LayerName, string> = {
+  tiny: 'Tiny',
+  small: 'Small',
+  med: 'Medium',
+  large: 'Large',
+  bright: 'Bright',
+  nebula: 'Nebula',
+  nebulaAux: 'Nebula aux',
+};
 
 const props = defineProps<{ settings: DemoSettings }>();
 const emit = defineEmits<{ 'update:settings': [s: DemoSettings] }>();
@@ -48,6 +61,25 @@ function updateColor(index: number, color: string) {
   palette[index] = color;
   update('palette', palette);
 }
+
+function updateWeight(layer: LayerName, weight: number) {
+  update('layerWeights', { ...props.settings.layerWeights, [layer]: weight });
+}
+
+function formatWeight(weight: number): string {
+  return weight === 0 ? 'off' : `${weight.toFixed(1)}×`;
+}
+
+function resetWeights() {
+  update(
+    'layerWeights',
+    Object.fromEntries(LAYER_NAMES.map((n) => [n, 1])) as Record<LayerName, number>
+  );
+}
+
+const hasCustomWeights = computed(() =>
+  LAYER_NAMES.some((n) => props.settings.layerWeights[n] !== 1)
+);
 </script>
 
 <template>
@@ -59,7 +91,7 @@ function updateColor(index: number, color: string) {
       :title="isOpen ? 'Close controls' : 'Open demo controls'"
       aria-label="Toggle demo controls"
     >
-      <svg
+      <!-- <svg
         width="18"
         height="18"
         viewBox="0 0 24 24"
@@ -73,6 +105,28 @@ function updateColor(index: number, color: string) {
         <path
           d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
         />
+      </svg> -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-sliders-horizontal-icon lucide-sliders-horizontal"
+      >
+        <path d="M10 5H3" />
+        <path d="M12 19H3" />
+        <path d="M14 3v4" />
+        <path d="M16 17v4" />
+        <path d="M21 12h-9" />
+        <path d="M21 19h-5" />
+        <path d="M21 5h-7" />
+        <path d="M8 10v4" />
+        <path d="M8 12H3" />
       </svg>
     </button>
 
@@ -107,6 +161,31 @@ function updateColor(index: number, color: string) {
                 {{ d }}
               </button>
             </div>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <h4>
+            Layers
+            <button v-if="hasCustomWeights" class="section-reset" @click="resetWeights">
+              reset
+            </button>
+          </h4>
+          <div v-for="layer in LAYER_NAMES" :key="layer" class="control-row">
+            <label
+              >{{ LAYER_LABELS[layer] }}
+              <span class="value" :class="{ 'is-off': settings.layerWeights[layer] === 0 }">{{
+                formatWeight(settings.layerWeights[layer])
+              }}</span></label
+            >
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.1"
+              :value="settings.layerWeights[layer]"
+              @input="updateWeight(layer, +($event.target as HTMLInputElement).value)"
+            />
           </div>
         </section>
 
@@ -168,13 +247,15 @@ function updateColor(index: number, color: string) {
   flex-direction: column;
   align-items: flex-end;
   gap: 0.75rem;
+  /* Bound the column to the viewport so the panel below can shrink into it. */
+  max-height: calc(100vh - 6rem);
 }
 
 .controls-toggle {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255);
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
   color: white;
@@ -193,7 +274,7 @@ function updateColor(index: number, color: string) {
 }
 
 .controls-toggle.is-open {
-  transform: rotate(45deg);
+  border: 2px solid #fff;
 }
 
 .controls-panel {
@@ -203,7 +284,14 @@ function updateColor(index: number, color: string) {
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   color: white;
-  overflow: hidden;
+  /*
+   * The Layers section makes the panel taller than the viewport on short screens.
+   * min-height:0 lets it shrink below its content size inside the flex column,
+   * so it fills whatever space the toggle button leaves rather than overrunning.
+   */
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .panel-header {
@@ -232,6 +320,25 @@ function updateColor(index: number, color: string) {
   letter-spacing: 0.08em;
   opacity: 0.4;
   margin-bottom: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-reset {
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.section-reset:hover {
+  color: #be6590;
 }
 
 .control-row {
@@ -267,6 +374,11 @@ function updateColor(index: number, color: string) {
   opacity: 0.45;
   font-variant-numeric: tabular-nums;
   font-size: 0.75rem;
+}
+
+.value.is-off {
+  opacity: 0.7;
+  color: #be6590;
 }
 
 input[type='range'] {
