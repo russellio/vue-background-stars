@@ -84,25 +84,11 @@ const hasCustomWeights = computed(() =>
 
 <template>
   <div class="demo-controls">
-    <button
-      class="controls-toggle"
-      :class="{ 'is-open': isOpen }"
-      @click="isOpen = !isOpen"
-      :title="isOpen ? 'Close controls' : 'Open demo controls'"
-      aria-label="Toggle demo controls"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="lucide lucide-sliders-horizontal-icon lucide-sliders-horizontal"
-      >
+    <button class="controls-toggle" :class="{ 'is-open': isOpen }" @click="isOpen = !isOpen"
+      :title="isOpen ? 'Close controls' : 'Open demo controls'" aria-label="Toggle demo controls">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="lucide lucide-sliders-horizontal-icon lucide-sliders-horizontal">
         <path d="M10 5H3" />
         <path d="M12 19H3" />
         <path d="M14 3v4" />
@@ -122,27 +108,15 @@ const hasCustomWeights = computed(() =>
         <section class="panel-section">
           <h4>Generation</h4>
           <div class="control-row">
-            <label
-              >Stars <span class="value">{{ settings.starCount }}</span></label
-            >
-            <input
-              type="range"
-              min="200"
-              max="2500"
-              step="100"
-              :value="settings.starCount"
-              @input="update('starCount', +($event.target as HTMLInputElement).value)"
-            />
+            <label>Stars <span class="value">{{ settings.starCount }}</span></label>
+            <input type="range" min="200" max="2500" step="100" :value="settings.starCount"
+              @input="update('starCount', +($event.target as HTMLInputElement).value)" />
           </div>
           <div class="control-row">
             <label>Density</label>
             <div class="segmented">
-              <button
-                v-for="d in ['sparse', 'normal', 'dense'] as const"
-                :key="d"
-                :class="{ active: settings.density === d }"
-                @click="update('density', d)"
-              >
+              <button v-for="d in ['sparse', 'normal', 'dense'] as const" :key="d"
+                :class="{ active: settings.density === d }" @click="update('density', d)">
                 {{ d }}
               </button>
             </div>
@@ -157,37 +131,21 @@ const hasCustomWeights = computed(() =>
             </button>
           </h4>
           <div v-for="layer in LAYER_NAMES" :key="layer" class="control-row">
-            <label
-              >{{ LAYER_LABELS[layer] }}
+            <label>{{ LAYER_LABELS[layer] }}
               <span class="value" :class="{ 'is-off': settings.layerWeights[layer] === 0 }">{{
                 formatWeight(settings.layerWeights[layer])
-              }}</span></label
-            >
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="0.1"
-              :value="settings.layerWeights[layer]"
-              @input="updateWeight(layer, +($event.target as HTMLInputElement).value)"
-            />
+                }}</span></label>
+            <input type="range" min="0" max="2" step="0.1" :value="settings.layerWeights[layer]"
+              @input="updateWeight(layer, +($event.target as HTMLInputElement).value)" />
           </div>
         </section>
 
         <section class="panel-section">
           <h4>Animation</h4>
           <div class="control-row">
-            <label
-              >Speed <span class="value">{{ settings.speed.toFixed(1) }}×</span></label
-            >
-            <input
-              type="range"
-              min="0.1"
-              max="3.0"
-              step="0.1"
-              :value="settings.speed"
-              @input="update('speed', +($event.target as HTMLInputElement).value)"
-            />
+            <label>Speed <span class="value">{{ settings.speed.toFixed(1) }}×</span></label>
+            <input type="range" min="0.1" max="3.0" step="0.1" :value="settings.speed"
+              @input="update('speed', +($event.target as HTMLInputElement).value)" />
           </div>
           <div class="control-row control-row--inline">
             <label>Disable animation</label>
@@ -198,23 +156,14 @@ const hasCustomWeights = computed(() =>
         <section class="panel-section">
           <h4>Palette</h4>
           <div class="preset-chips">
-            <button
-              v-for="name in Object.keys(PALETTES) as PaletteName[]"
-              :key="name"
-              :class="{ active: selectedPreset === name }"
-              @click="selectPreset(name)"
-            >
+            <button v-for="name in Object.keys(PALETTES) as PaletteName[]" :key="name"
+              :class="{ active: selectedPreset === name }" @click="selectPreset(name)">
               {{ name }}
             </button>
           </div>
           <div class="swatch-inputs">
-            <input
-              v-for="(color, i) in settings.palette"
-              :key="i"
-              type="color"
-              :value="color"
-              @input="updateColor(i, ($event.target as HTMLInputElement).value)"
-            />
+            <input v-for="(color, i) in settings.palette" :key="i" type="color" :value="color"
+              @input="updateColor(i, ($event.target as HTMLInputElement).value)" />
           </div>
         </section>
       </div>
