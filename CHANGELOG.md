@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-08-17
+
+### Features
+
+- **build:** auto-inject component styles via `vite-plugin-lib-inject-css` — importing `BackgroundStars` or `ToggleSwitch` now pulls in their CSS as a side effect, so the separate `import '@russellio/vue-background-stars/style.css'` is no longer required for bundler consumers (Vite, webpack, Next, Nuxt). The UMD build still injects styles into `<head>` at runtime for `<script>`-tag consumers, and the explicit CSS import keeps working if you'd rather use a `<link rel="stylesheet">` ([a055180](https://github.com/russellio/vue-background-stars/commit/a0551805bf092d83f814787c91142f7494100fd6))
+
+### Security
+
+- **ci:** add explicit `permissions: contents: read` to the CI workflow, closing a code-scanning alert on the missing top-level permissions block ([53a86c7](https://github.com/russellio/vue-background-stars/commit/53a86c74a559f472576afd451230a49172980168))
+
+### Chores
+
+- **release:** drop release-please in favor of the manual release flow documented in `CLAUDE.md` — it tagged `vue-background-stars-v*` and pushed with the default `GITHUB_TOKEN`, which GitHub won't let trigger `publish.yml`, so its releases never reached npm (this is how `v1.3.0` was tagged and released on GitHub but skipped the registry) ([48fec6e](https://github.com/russellio/vue-background-stars/commit/48fec6eec7c695dc0e122f86bb80d256eac211a3))
+- **deps:** track `pnpm-lock.yaml` alongside `package-lock.json`; bump devDependencies (vite, vitest, typescript tooling, eslint, prettier) — no runtime dependency changes ([a055180](https://github.com/russellio/vue-background-stars/commit/a0551805bf092d83f814787c91142f7494100fd6))
+
 ## [1.3.1] - 2026-08-11
 
 ### Features
