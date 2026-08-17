@@ -45,12 +45,11 @@ pnpm add @russellio/vue-background-stars
 
 ## Usage
 
-Import the component and stylesheet where you need the background.
+Import the component where you need the background — its styles come along automatically as a side effect of the import, no separate CSS import required.
 
 ```vue
 <script setup lang="ts">
 import { BackgroundStars } from '@russellio/vue-background-stars';
-import '@russellio/vue-background-stars/style.css';
 </script>
 
 <template>
@@ -64,7 +63,6 @@ The component renders as a fixed background with `z-index: -1`, so your page con
 <script setup lang="ts">
 import { ref } from 'vue';
 import { BackgroundStars, ToggleSwitch } from '@russellio/vue-background-stars';
-import '@russellio/vue-background-stars/style.css';
 
 const showStars = ref(true);
 </script>
@@ -96,7 +94,6 @@ You can register both components globally with the default plugin export.
 ```ts
 import { createApp } from 'vue';
 import VueBackgroundStars from '@russellio/vue-background-stars';
-import '@russellio/vue-background-stars/style.css';
 import App from './App.vue';
 
 const app = createApp(App);
@@ -223,7 +220,7 @@ const enabled = ref(false);
 
 ## Styling
 
-Importing `@russellio/vue-background-stars/style.css` is required. The components include their base styles, but you can still override global selectors or set the toggle CSS variables from a wrapper.
+Base styles load automatically when you import the components — bundlers (Vite, webpack, Next, Nuxt) pick up the stylesheet as a side effect of the JS import, so no separate CSS import is needed. If you're consuming the UMD build directly via a `<script>` tag with no bundler, the styles are injected into `<head>` at runtime instead. You can still override global selectors or set the toggle CSS variables from a wrapper, and `@russellio/vue-background-stars/style.css` remains available as an explicit import if you want a `<link rel="stylesheet">` instead.
 
 ```css
 .my-page {
