@@ -43,7 +43,7 @@ importers:
         version: 10.11.1(@typescript-eslint/parser@8.67.0(eslint@10.11.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@10.11.0(supports-color@8.1.1))(vue-eslint-parser@10.4.1(eslint@10.11.0(supports-color@8.1.1))(supports-color@8.1.1))
       happy-dom:
         specifier: ^20.11.2
-        version: 20.14.5
+        version: 20.14.6
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -70,7 +70,7 @@ importers:
         version: 2.2.2(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
       vitest:
         specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
+        version: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
       vitest-axe:
         specifier: ^0.1.0
         version: 0.1.0(vitest@4.1.10)
@@ -97,8 +97,8 @@ importers:
         specifier: ^8.3.4
         version: 8.3.4(@types/node@26.6.4)(yaml@2.9.1)
       vue-tsc:
-        specifier: ^3.3.11
-        version: 3.3.11(typescript@6.0.3)
+        specifier: ^3.3.12
+        version: 3.3.12(typescript@6.0.3)
 
 packages:
 
@@ -632,6 +632,9 @@ packages:
   '@vue/language-core@3.3.11':
     resolution: {integrity: sha512-QJmpliwAVpC/OxubIByPAhNzsQPRc8/gxlN2qnVzVfIMjMDz/9RnXRFoetjz5yEgXVXyp4LqhXq3V53PjmNzFw==}
 
+  '@vue/language-core@3.3.12':
+    resolution: {integrity: sha512-k7uIKR0n4CBidk233y7cac9osnDQ5WRidTl6nsrNvpZ3nf8cx9iJxRVsRzVsoPRHbowT/iKgGMTS9RGov3jeIA==}
+
   '@vue/reactivity@3.5.43':
     resolution: {integrity: sha512-G/c9GyOZNI2jVaaS6OX1EF1SSFSv7H0ERqNTl4+DTFMlZmB5eVAB53aLQNam/7NL2NPtaDD7RdVrzf8uJzMuOA==}
 
@@ -971,8 +974,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@20.14.5:
-    resolution: {integrity: sha512-x/RzkpWO40bTjIoT30iQtt64FLLmH/iRcUCN2X//bLx7H3ifkdfPXyqsro/OYtqzIAhiLMMA7mmiOR9C3NOKjQ==}
+  happy-dom@20.14.6:
+    resolution: {integrity: sha512-5DDsf4QmEIlRL6NkCv/fxSjYHHkZceL/IaYQdJc2h3G7DRTEai++VTjbfL0LB9geW2VrA3+vrjF3Efx+OTtX0Q==}
     engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
@@ -1675,6 +1678,12 @@ packages:
     peerDependencies:
       typescript: '>=5.0.0'
 
+  vue-tsc@3.3.12:
+    resolution: {integrity: sha512-kbpaz18O9jPVkXVHD1BEjpUXM6WhXSu+62L1sGGr6Wbzd8GbvkBQWjoj3KZ/C0aq2MZllce7UdtWzwCIYsBMGA==}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=5.0.0'
+
   vue@3.5.43:
     resolution: {integrity: sha512-o5qZoksdnjIKvW1srZ3ab7pcDNYAerBjRe54D0LBLfRdCYFrSgBHVXokMas35czQc0//lmx4/tuY4ZNQ+Rf2Ng==}
     peerDependencies:
@@ -2153,7 +2162,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
+      vitest: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
 
   '@vitest/expect@4.1.10':
     dependencies:
@@ -2199,7 +2208,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vitest: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
+      vitest: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
 
   '@vitest/utils@4.1.10':
     dependencies:
@@ -2282,6 +2291,16 @@ snapshots:
       '@volar/language-core': 2.4.28
       '@vue/compiler-dom': 3.5.42
       '@vue/shared': 3.5.42
+      alien-signals: 3.2.1
+      muggle-string: 0.4.1
+      path-browserify: 1.0.1
+      picomatch: 4.0.7
+
+  '@vue/language-core@3.3.12':
+    dependencies:
+      '@volar/language-core': 2.4.28
+      '@vue/compiler-dom': 3.5.43
+      '@vue/shared': 3.5.43
       alien-signals: 3.2.1
       muggle-string: 0.4.1
       path-browserify: 1.0.1
@@ -2622,7 +2641,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@20.14.5:
+  happy-dom@20.14.6:
     dependencies:
       '@types/node': 26.6.4
       '@types/whatwg-mimetype': 3.0.2
@@ -3161,9 +3180,9 @@ snapshots:
       dom-accessibility-api: 0.5.16
       lodash-es: 4.18.1
       redent: 3.0.0
-      vitest: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
+      vitest: 4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
 
-  vitest@4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1)):
+  vitest@4.1.10(@types/node@26.6.4)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.10
       '@vitest/mocker': 4.1.10(vite@8.3.4(@types/node@26.6.4)(yaml@2.9.1))
@@ -3189,7 +3208,7 @@ snapshots:
       '@types/node': 26.6.4
       '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
       '@vitest/ui': 4.1.10(vitest@4.1.10)
-      happy-dom: 20.14.5
+      happy-dom: 20.14.6
     transitivePeerDependencies:
       - msw
 
@@ -3213,6 +3232,12 @@ snapshots:
     dependencies:
       '@volar/typescript': 2.4.28(typescript@6.0.3)
       '@vue/language-core': 3.3.11
+      typescript: 6.0.3
+
+  vue-tsc@3.3.12(typescript@6.0.3):
+    dependencies:
+      '@volar/typescript': 2.4.28(typescript@6.0.3)
+      '@vue/language-core': 3.3.12
       typescript: 6.0.3
 
   vue@3.5.43(typescript@6.0.3):
