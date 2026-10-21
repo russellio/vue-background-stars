@@ -4,6 +4,8 @@ import {
   BLINK_DURATIONS,
   BRIGHT_STAR_GLOW,
   DENSITY_SCALE,
+  type LayerName,
+  type LayerWeights,
   NEBULA_FRACTIONS,
   NEBULA_GLOW,
   NEBULA_MAX_Y,
@@ -27,6 +29,12 @@ interface Props {
   speed?: number;
   /** When true, suppresses the blink animation regardless of prefers-reduced-motion. */
   disableAnimation?: boolean;
+  /**
+   * Per-layer count multipliers, e.g. `{ nebula: 0.5, nebulaAux: 0 }`.
+   * Omitted layers default to 1; 0 omits the layer entirely.
+   * Read once at generation time — change the component's `key` to regenerate.
+   */
+  layerWeights?: LayerWeights;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -35,6 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
   density: 'normal',
   speed: 0.8,
   disableAnimation: false,
+  layerWeights: () => ({}),
 });
 
 const emit = defineEmits<{ 'background-ready': [] }>();
@@ -87,18 +96,37 @@ let rafId: number;
 function buildLayers(): StarLayers {
   const s = DENSITY_SCALE[props.density];
   const n = props.starCount;
-  const count = (frac: number) => Math.max(1, Math.floor(n * frac * s));
   const { blur: gb, spread: gs } = BRIGHT_STAR_GLOW;
 
+  /**
+   * Resolve a layer's star count. A weight of 0 short-circuits before the
+   * `Math.max(1, ...)` floor, which would otherwise leave one stray star behind
+   * on a layer the caller asked to remove.
+   */
+  const count = (frac: number, layer: LayerName) => {
+    const weight = Math.max(0, props.layerWeights[layer] ?? 1);
+    if (weight === 0) return 0;
+    return Math.max(1, Math.floor(n * frac * s * weight));
+  };
+
   return {
-    tiny: makeStarShadow(count(STAR_LAYER_FRACTIONS.tiny), '#fff'),
-    small: makeStarShadow(count(STAR_LAYER_FRACTIONS.small), '#fff'),
-    med: makeStarShadow(count(STAR_LAYER_FRACTIONS.med), '#fff'),
-    large: makeStarShadow(count(STAR_LAYER_FRACTIONS.large), '#fff'),
-    bright: makeStarShadow(count(STAR_LAYER_FRACTIONS.bright), 'rgba(255,255,255,0.85)', gb, gs),
-    nebula: makeNebulaShadow(count(NEBULA_FRACTIONS.main), props.palette.length, NEBULA_MAX_Y.main),
+    tiny: makeStarShadow(count(STAR_LAYER_FRACTIONS.tiny, 'tiny'), '#fff'),
+    small: makeStarShadow(count(STAR_LAYER_FRACTIONS.small, 'small'), '#fff'),
+    med: makeStarShadow(count(STAR_LAYER_FRACTIONS.med, 'med'), '#fff'),
+    large: makeStarShadow(count(STAR_LAYER_FRACTIONS.large, 'large'), '#fff'),
+    bright: makeStarShadow(
+      count(STAR_LAYER_FRACTIONS.bright, 'bright'),
+      'rgba(255,255,255,0.85)',
+      gb,
+      gs
+    ),
+    nebula: makeNebulaShadow(
+      count(NEBULA_FRACTIONS.main, 'nebula'),
+      props.palette.length,
+      NEBULA_MAX_Y.main
+    ),
     nebulaAux: makeNebulaShadow(
-      count(NEBULA_FRACTIONS.aux),
+      count(NEBULA_FRACTIONS.aux, 'nebulaAux'),
       props.palette.length,
       NEBULA_MAX_Y.aux
     ),
@@ -125,25 +153,33 @@ onBeforeUnmount(() => {
   <div class="sky" ref="skyRef">
     <div class="sky-base"></div>
     <template v-if="layers">
+      <!--
+        Each layer is omitted entirely when its weight zeroes out its star count,
+        so a disabled layer leaves no element and no running blink animation.
+      -->
       <!-- Tiny white stars — no animation, densest layer -->
-      <div class="star-layer star-tiny" :style="{ boxShadow: layers.tiny }" />
+      <div v-if="layers.tiny" class="star-layer star-tiny" :style="{ boxShadow: layers.tiny }" />
       <!-- Larger layers blink unless disableAnimation or prefers-reduced-motion -->
       <div
+        v-if="layers.small"
         class="star-layer star-small"
         :class="{ blink: !disableAnimation }"
         :style="{ boxShadow: layers.small, animationDuration: `${BLINK_DURATIONS.small * speed}s` }"
       />
       <div
+        v-if="layers.med"
         class="star-layer star-med"
         :class="{ blink: !disableAnimation }"
         :style="{ boxShadow: layers.med, animationDuration: `${BLINK_DURATIONS.med * speed}s` }"
       />
       <div
+        v-if="layers.large"
         class="star-layer star-large"
         :class="{ blink: !disableAnimation }"
         :style="{ boxShadow: layers.large, animationDuration: `${BLINK_DURATIONS.large * speed}s` }"
       />
       <div
+        v-if="layers.bright"
         class="star-layer star-bright"
         :class="{ blink: !disableAnimation }"
         :style="{
@@ -152,8 +188,12 @@ onBeforeUnmount(() => {
         }"
       />
       <!-- Colored nebula glow layers — rotated to form a diagonal band -->
-      <div class="nebula-layer" :style="{ boxShadow: layers.nebula }" />
-      <div class="nebula-layer nebula-layer-aux" :style="{ boxShadow: layers.nebulaAux }" />
+      <div v-if="layers.nebula" class="nebula-layer" :style="{ boxShadow: layers.nebula }" />
+      <div
+        v-if="layers.nebulaAux"
+        class="nebula-layer nebula-layer-aux"
+        :style="{ boxShadow: layers.nebulaAux }"
+      />
     </template>
   </div>
 </template>
@@ -250,6 +290,8 @@ onBeforeUnmount(() => {
   background-color: transparent;
   transform: rotate(20deg);
   transform-origin: top left;
+  /* Glows overlap heavily at this blur radius; damp them so they don't stack white. */
+  opacity: 0.55;
 }
 
 .nebula-layer-aux {

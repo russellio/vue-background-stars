@@ -8,6 +8,13 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - "dependencies"
+    ignore:
+      # TypeScript 7 is the Go-native rewrite and ships no JS compiler API,
+      # so Volar/vue-tsc cannot embed it. Vue projects must stay on 6.x until
+      # TS exposes a stable programmatic API.
+      # https://github.com/vuejs/language-tools/issues/5381
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
 
   - package-ecosystem: "npm"
     directory: "/demo"
@@ -18,6 +25,10 @@ updates:
     labels:
       - "dependencies"
       - "demo"
+    ignore:
+      # See note above — vue-tsc cannot run on TypeScript 7.
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"

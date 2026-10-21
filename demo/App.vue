@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { defineAsyncComponent, reactive, shallowRef, ref } from 'vue';
+import { computed, defineAsyncComponent, reactive, shallowRef, ref } from 'vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
+import { LAYER_NAMES, type LayerName } from '@/config';
 import DemoControls, { type DemoSettings } from './components/DemoControls.vue';
 
 const BackgroundStars = defineAsyncComponent(() => import('@/components/BackgroundStars.vue'));
@@ -22,15 +23,26 @@ const settings = reactive<DemoSettings>({
   palette: ['#280F36', '#632B6C', '#BE6590', '#FFC1A0', '#FE9C7F'],
   speed: 0.8,
   disableAnimation: false,
+  layerWeights: Object.fromEntries(LAYER_NAMES.map((n) => [n, 1])) as Record<LayerName, number>,
 });
 
 function onSettingsUpdate(next: DemoSettings) {
   Object.assign(settings, next);
 }
 
+/**
+ * Layers are generated once in onMounted, so any setting that feeds buildLayers()
+ * has to participate in the component key to take effect.
+ */
+const remountKey = computed(
+  () =>
+    `${settings.starCount}-${settings.density}-${LAYER_NAMES.map((n) => settings.layerWeights[n]).join(',')}`
+);
+
 const features = [
   'Vue 3 component with TypeScript definitions',
   'Configurable star count, density, color palette, and animation speed',
+  'Per-layer weights to tune or remove individual star types',
   'Box-shadow based star layers generated on the first animation frame',
   'Respects reduced-motion preferences and supports disabling animation',
   'No runtime dependencies beyond Vue',
@@ -62,12 +74,13 @@ const showStars = shallowRef(true);
     <Transition name="background-fade" appear>
       <BackgroundStars
         v-if="showStars"
-        :key="`${settings.starCount}-${settings.density}`"
+        :key="remountKey"
         :starCount="settings.starCount"
         :density="settings.density"
         :palette="settings.palette"
         :speed="settings.speed"
         :disableAnimation="settings.disableAnimation"
+        :layerWeights="settings.layerWeights"
         @background-ready="onBackgroundReady"
       />
     </Transition>
@@ -97,12 +110,20 @@ const showStars = shallowRef(true);
         <h2>Customization</h2>
         <p>
           Use props such as <code>starCount</code>, <code>density</code>, <code>speed</code>,
-          <code>palette</code>, and <code>disableAnimation</code> to tune the generated starfield.
+          <code>palette</code>, <code>layerWeights</code>, and <code>disableAnimation</code> to tune
+          the generated starfield.
+        </p>
+
+        <p>
+          <code>layerWeights</code> scales each star type independently — set a layer to
+          <code>0</code> to remove it entirely. Drop the nebula weights to zero for a plain pinpoint
+          starfield with no colored glow.
         </p>
 
         <p>
           Click the
           <svg
+            xmlns="http://www.w3.org/2000/svg"
             width="18"
             height="18"
             viewBox="0 0 24 24"
@@ -111,12 +132,17 @@ const showStars = shallowRef(true);
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            style="margin: 0 0.4rem"
+            class="lucide lucide-sliders-horizontal-icon lucide-sliders-horizontal mx-0.5"
           >
-            <circle cx="12" cy="12" r="3" />
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-            />
+            <path d="M10 5H3" />
+            <path d="M12 19H3" />
+            <path d="M14 3v4" />
+            <path d="M16 17v4" />
+            <path d="M21 12h-9" />
+            <path d="M21 19h-5" />
+            <path d="M21 5h-7" />
+            <path d="M8 10v4" />
+            <path d="M8 12H3" />
           </svg>
           icon to adjust these properties and see the change in real time.
         </p>
@@ -149,7 +175,7 @@ const showStars = shallowRef(true);
 
       <div class="demo-footer">
         <p>
-          Built by <a href="https://jonrussell.dev">russellio</a> with
+          Built by <a href="https://russellio.com">Russell I/O</a> with
           <a href="https://vuejs.org">Vue 3</a> and
           <a href="https://www.typescriptlang.org">TypeScript</a>.
         </p>

@@ -11,3 +11,4 @@ CLAUDE.md
 .agents
 skills-lock.json
 coverage/
+.husky
