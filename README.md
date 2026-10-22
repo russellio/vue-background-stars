@@ -273,42 +273,42 @@ The package targets modern browsers that support Vue 3, CSS animations, and stan
 Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 Run the demo app:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Build the package:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Run checks:
 
 ```bash
-npm run type-check
-npm run test:run
-npm run lint
-npm run format:check
+pnpm run type-check
+pnpm run test:run
+pnpm run lint
+pnpm run format:check
 ```
 
 Common scripts:
 
-| Script                  | Description                               |
-| ----------------------- | ----------------------------------------- |
-| `npm run dev`           | Starts the Vite demo app.                 |
-| `npm run build`         | Type-checks and builds the package.       |
-| `npm run preview`       | Serves the production demo build locally. |
-| `npm run type-check`    | Runs `vue-tsc --noEmit`.                  |
-| `npm test`              | Starts Vitest in watch mode.              |
-| `npm run test:run`      | Runs Vitest once.                         |
-| `npm run test:coverage` | Runs Vitest with coverage.                |
-| `npm run lint`          | Runs ESLint over `src/`.                  |
+| Script                   | Description                               |
+| ------------------------ | ----------------------------------------- |
+| `pnpm run dev`           | Starts the Vite demo app.                 |
+| `pnpm run build`         | Type-checks and builds the package.       |
+| `pnpm run preview`       | Serves the production demo build locally. |
+| `pnpm run type-check`    | Runs `vue-tsc --noEmit`.                  |
+| `pnpm test`              | Starts Vitest in watch mode.              |
+| `pnpm run test:run`      | Runs Vitest once.                         |
+| `pnpm run test:coverage` | Runs Vitest with coverage.                |
+| `pnpm run lint`          | Runs ESLint over `src/`.                  |
 
 Build output is written to `dist/` and includes:
 
