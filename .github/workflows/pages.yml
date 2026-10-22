@@ -20,19 +20,24 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: pnpm/action-setup@v6
+
       - uses: actions/setup-node@v7
         with:
           node-version: "22.x"
-          cache: npm
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            demo/pnpm-lock.yaml
 
       - name: Install root dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install demo dependencies
-        run: cd demo && npm ci
+        run: cd demo && pnpm install --frozen-lockfile
 
       - name: Build demo
-        run: cd demo && npx vite build --base /vue-background-stars/
+        run: cd demo && pnpm exec vite build --base /vue-background-stars/
 
       - uses: actions/upload-pages-artifact@v5
         with:
