@@ -16,6 +16,13 @@ updates:
       vitest-security:
         applies-to: security-updates
         patterns: ["vitest", "@vitest/*"]
+      # Everything else minor/patch goes in one PR. Separate PRs each edit
+      # pnpm-lock.yaml, and merging them back-to-back textually merged
+      # overlapping hunks (vue-tsc@3.3.14 ended up triplicated, breaking
+      # pnpm install). One PR per directory per run avoids that.
+      npm-minor-patch:
+        update-types: ["minor", "patch"]
+        patterns: ["*"]
     ignore:
       # TypeScript 7 is the Go-native rewrite and ships no JS compiler API,
       # so Volar/vue-tsc cannot embed it. Vue projects must stay on 6.x until
@@ -33,6 +40,11 @@ updates:
     labels:
       - "dependencies"
       - "demo"
+    groups:
+      # See npm-minor-patch note above — one lockfile-editing PR at a time.
+      demo-minor-patch:
+        update-types: ["minor", "patch"]
+        patterns: ["*"]
     ignore:
       # See note above — vue-tsc cannot run on TypeScript 7.
       - dependency-name: "typescript"
